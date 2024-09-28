@@ -4,7 +4,8 @@ import { Plus, Minus } from 'lucide-react';
 import { Button } from '@mui/material';  // ใช้ Button จาก MUI
 import Navbar from '../Navbar';
 
-const TicketSelection = () => {
+
+const Kamibfun = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { concert } = location.state || { concert: { name: 'Unknown Concert' } };
@@ -82,4 +83,4 @@ const TicketTypeRow = ({ label, price, value, onIncrement, onDecrement }) => (
   </div>
 );
 
-export default TicketSelection;
+export default Kamibfun;

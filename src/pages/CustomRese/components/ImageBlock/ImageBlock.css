@@ -1,0 +1,35 @@
+/* ImageBlock.css */
+
+.custom-tooltip {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 200px;
+    font-size: 14px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease;
+}
+
+.tooltip-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column; /* Aligns items in a column */
+}
+
+.tooltip-title {
+    font-weight: bold;
+    margin: 0;
+    font-size: 16px;
+}
+
+.tooltip-description {
+    margin: 5px 0 0 0; /* Add margin-top for spacing */
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.tooltip-icon {
+    margin-left: 8px;
+    color: white; /* Change color based on your design */
+}

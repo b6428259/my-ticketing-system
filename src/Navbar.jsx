@@ -4,7 +4,7 @@ import AudiotrackIcon from '@mui/icons-material/Audiotrack'; // Import the icon
 
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center p-6 bg-gray-800">
+    <nav className="flex justify-between items-center p-6">
       <div className="text-xl font-bold flex items-center">
         <AudiotrackIcon className="mr-2" /> {/* Add the icon */}
         <Link to="/" className="text-white">Mini Concerts</Link>

@@ -5,6 +5,11 @@
   text-align: center;
 }
 
+html {
+  scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+
 .logo {
   height: 6em;
   padding: 1.5em;
