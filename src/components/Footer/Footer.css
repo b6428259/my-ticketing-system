@@ -1,0 +1,26 @@
+footer {
+  margin-top: 1px; /* Add some margin on top */
+}
+
+
+
+.footer {
+  background-color: black;
+  color: #cccccc; /* Light grey text color */
+  padding: 1.5rem 0; /* Padding for top and bottom */
+}
+
+.footer .link-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.footer a {
+  color: #cccccc;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #ffffff;
+}

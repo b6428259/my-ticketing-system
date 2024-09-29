@@ -1,14 +1,23 @@
+// App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
-import Home from "./pages/Home";
-import TicketSelection from "./pages/TicketSelection";
-import Payment from "./pages/Payment";
-import Kamibfun from "./pages/CustomRese/Kamib";
-import Loading from "./pages/Loading/Loading"; // Import Loading component
-import './pages/Loading/Loading.css'; // Import CSS for Loading component
+import { useEffect, useState, Suspense, lazy } from "react";
+import Loading from "./components/Loading/Loading"; // Import Loading component
+import './components/Loading/Loading.css'; // Import CSS for Loading 
+import Footer from "./components/Footer/Footer"; // Import Footer component
+import Navbar from "./components/Navbar/Navbar";
+
+
+// Lazy load other components
+const Home = lazy(() => import("./pages/็Home/Home"));
+const TicketSelection = lazy(() => import("../TicketSelection"));
+const Payment = lazy(() => import("./pages/Payment/Payment"));
+const Kamibfun = lazy(() => import("./pages/Kamibfun/Kamib"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
 
 export default function App() {
   const [loading, setLoading] = useState(true); // Loading state
+  const [isNavbarVisible, setIsNavbarVisible] = useState(true); // New state for navbar visibility
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -20,13 +29,26 @@ export default function App() {
 
   return (
     <Router>
-      {loading && <Loading />} {/* Show loading screen while loading */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/reserve" element={<TicketSelection />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/kamibfun" element={<Kamibfun />} />
-      </Routes>
+      {loading ? (
+        // Show the loading component while loading is true
+        <Loading />
+      ) : (
+        // Show the actual routes once loading is complete
+        <>
+                  <Navbar isVisible={isNavbarVisible} />
+
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/reserve" element={<TicketSelection />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/kamibfun" element={<Kamibfun />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            </Routes>
+          </Suspense>
+          <Footer /> {/* Footer will appear globally */}
+        </>
+      )}
     </Router>
   );
 }

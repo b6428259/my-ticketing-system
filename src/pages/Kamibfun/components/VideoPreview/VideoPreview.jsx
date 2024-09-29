@@ -39,10 +39,9 @@ const VideoPreview = ({ videoSrc, poster }) => {
         src={videoSrc}
         poster={poster}
         className="rounded-lg shadow-lg"
-        muted // Mute the video to avoid sound
+        muted // Mute the video
         playsInline // Allow the video to play inline on mobile devices
         autoPlay // Autoplay the video
-        loop // Optional: loop the video
         style={{
           width: '100vw', // Full viewport width
           height: '100vh', // Full viewport height

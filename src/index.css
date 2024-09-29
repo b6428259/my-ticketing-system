@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* App.css or index.css */
+
+@font-face {
+    font-family: 'CustomFont';
+    src: url('./fonts/iannnnn-OWL-Bold.otf') format('opentype'),
+         url('./fonts/iannnnn-OWL-Regular.otf') format('opentype'),
+         url('./fonts/iannnnn-OWL-Thin.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Additional font-weight settings */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('./fonts/iannnnn-OWL-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CustomFont';
+    src: url('./fonts/iannnnn-OWL-Thin.otf') format('opentype');
+    font-weight: 300; /* Light/Thin weight */
+    font-style: normal;
+}
+
+/* Global Styles */
+
+html {
+    scroll-behavior: smooth; /* Enable smooth scrolling */
+}
+
+body {
+    font-family: 'CustomFont', sans-serif; /* Apply custom font as default */
+    margin: 0; /* Reset margin */
+    padding: 0; /* Reset padding */
+    line-height: 1.6; /* Optional: Improve readability */
+}
+
+/* You can also set styles for specific elements */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'CustomFont', sans-serif; /* Ensures headings use custom font */
+}
+
+p {
+    font-family: 'CustomFont', sans-serif; /* Ensures paragraphs use custom font */
+}

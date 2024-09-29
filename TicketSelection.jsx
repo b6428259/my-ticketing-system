@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Minus } from 'lucide-react';
 import { Button } from '@mui/material';  // ใช้ Button จาก MUI
-import Navbar from '../Navbar';
+import Navbar from './src/components/Navbar/Navbar';
 
 
 const Kamibfun = () => {
