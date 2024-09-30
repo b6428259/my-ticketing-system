@@ -1,5 +1,5 @@
 // App.jsx
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Import useLocation
+import { HashRouter  as Router, Routes, Route, useLocation } from "react-router-dom"; // Import useLocation
 import { useEffect, useState, Suspense, lazy } from "react";
 import Loading from "./components/Loading/Loading"; // Import Loading component
 import './components/Loading/Loading.css'; // Import CSS for Loading 
