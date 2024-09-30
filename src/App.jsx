@@ -13,6 +13,8 @@ const TicketSelection = lazy(() => import("../TicketSelection"));
 const Payment = lazy(() => import("./pages/Payment/Payment"));
 const Kamibfun = lazy(() => import("./pages/Kamibfun/Kamib"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/TermsOfService/TermsOfService"));
+const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 
 export default function App() {
   const [loading, setLoading] = useState(true); // Loading state
@@ -44,6 +46,8 @@ export default function App() {
               <Route path="/payment" element={<Payment />} />
               <Route path="/kamibfun" element={<Kamibfun />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/contact-us" element={<ContactUs />} />
             </Routes>
           </Suspense>
           <Footer /> {/* Footer will appear globally */}

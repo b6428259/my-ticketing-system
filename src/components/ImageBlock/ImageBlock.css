@@ -1,4 +1,17 @@
-/* ImageBlock.css */
+@keyframes slideUp {
+    0% {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 1s ease-out forwards;
+}
 
 .custom-tooltip {
     transform: scale(0.9);
@@ -33,3 +46,4 @@
     margin-left: 8px;
     color: white; /* Change color based on your design */
 }
+

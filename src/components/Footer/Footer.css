@@ -1,8 +1,6 @@
 footer {
-  margin-top: 1px; /* Add some margin on top */
+  margin-top: 1rem; /* Slightly increased margin for better separation */
 }
-
-
 
 .footer {
   background-color: black;
@@ -10,10 +8,34 @@ footer {
   padding: 1.5rem 0; /* Padding for top and bottom */
 }
 
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .footer-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
 .footer .link-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .footer .link-container {
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 0;
+  }
 }
 
 .footer a {
