@@ -1,0 +1,1 @@
+import{j as e}from"./index-jF5HX5Fk.js";function n(){return e.jsx("div",{className:"min-h-screen bg-gray-100 flex items-center justify-center",children:e.jsx("h1",{className:"text-2xl font-bold",children:"Complete Your Payment"})})}export{n as default};
