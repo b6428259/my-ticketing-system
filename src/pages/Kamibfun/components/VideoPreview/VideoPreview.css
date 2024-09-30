@@ -36,6 +36,24 @@
   .arrow-down {
     font-size: 30px; /* Size of the arrow */
   }
+
+  .mute-button {
+    background: rgba(0, 0, 0, 0.7); /* Initial background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.3s ease; /* Transition background and transform */
+  }
+
+  
+  
+  .mute-button:hover {
+    background: rgba(255, 255, 255, 0.2); /* Change background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+  }
+  
   
   /* Animation for the scrolling text */
   @keyframes scroll-text {

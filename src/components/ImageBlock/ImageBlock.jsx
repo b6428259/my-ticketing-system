@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip, CircularProgress } from '@mui/material';
-import { Info } from 'lucide-react'; // You can use any icon library you like
-import './ImageBlock.css'; // Import a CSS file for custom styles
+import { Info } from 'lucide-react';
+import './ImageBlock.css'; // Custom CSS styles
 
 const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
       placement="top"
       classes={{ tooltip: 'custom-tooltip' }}
     >
-      <div className="overflow-hidden rounded-lg relative" style={style}>
+      <div className="image-block-container overflow-hidden rounded-lg relative" style={style}>
         {loading && (
           <div className="image-loader">
             <CircularProgress style={{ color: 'white' }} />
@@ -64,10 +64,9 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
           alt={alt}
           loading="eager"
           onLoad={handleImageLoad}
-          className={`rounded-lg shadow-lg bg-black bg-opacity-80 border-2 border-white transition duration-300 transform ${
+          className={`image-block rounded-lg shadow-lg bg-black bg-opacity-80 border-2 border-white transition duration-300 transform ${
             loading ? 'invisible' : 'hover:scale-110'
           } ${inView ? 'animate-slide-up' : ''}`}
-          style={{ width: '100%', height: 'auto', maxWidth: '250px', objectFit: 'cover' }}
         />
       </div>
     </Tooltip>

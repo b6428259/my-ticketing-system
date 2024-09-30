@@ -1,14 +1,14 @@
 // App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // Import useLocation
 import { useEffect, useState, Suspense, lazy } from "react";
 import Loading from "./components/Loading/Loading"; // Import Loading component
 import './components/Loading/Loading.css'; // Import CSS for Loading 
 import Footer from "./components/Footer/Footer"; // Import Footer component
 import Navbar from "./components/Navbar/Navbar";
-
+import Reserve from "./pages/Reserve/Reserve";
 
 // Lazy load other components
-const Home = lazy(() => import("./pages/็Home/Home"));
+const Home = lazy(() => import("./pages/Home/Home"));
 const TicketSelection = lazy(() => import("../TicketSelection"));
 const Payment = lazy(() => import("./pages/Payment/Payment"));
 const Kamibfun = lazy(() => import("./pages/Kamibfun/Kamib"));
@@ -16,10 +16,9 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService/TermsOfService"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
 
-export default function App() {
+function App() {
   const [loading, setLoading] = useState(true); // Loading state
-  const [isNavbarVisible, setIsNavbarVisible] = useState(true); // New state for navbar visibility
-
+  const location = useLocation(); // Get current location
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,20 +28,25 @@ export default function App() {
     return () => clearTimeout(timer); // Clean up the timer
   }, []);
 
+  // Define paths where the navbar should be hidden
+  const hiddenNavbarPaths = ["/kamibfun"]; // Add paths to hide Navbar
+  // const hiddenNavbarPaths = ["/kamibfun", "/another-path"]; // Add more paths as needed
+
+
+  const isNavbarVisible = !hiddenNavbarPaths.includes(location.pathname); // Determine visibility
+
   return (
-    <Router>
+    <>
       {loading ? (
         // Show the loading component while loading is true
         <Loading />
       ) : (
-        // Show the actual routes once loading is complete
         <>
-                  <Navbar isVisible={isNavbarVisible} />
-
+          {isNavbarVisible && <Navbar />} {/* Render Navbar only if visible */}
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/reserve" element={<TicketSelection />} />
+              <Route path="/reserve" element={<Reserve />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/kamibfun" element={<Kamibfun />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -53,6 +57,15 @@ export default function App() {
           <Footer /> {/* Footer will appear globally */}
         </>
       )}
+    </>
+  );
+}
+
+// Wrap App with Router
+export default function AppWithRouter() {
+  return (
+    <Router>
+      <App />
     </Router>
   );
 }

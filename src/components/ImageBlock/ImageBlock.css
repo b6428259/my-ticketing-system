@@ -47,3 +47,48 @@
     color: white; /* Change color based on your design */
 }
 
+.image-block-container {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-block {
+    width: 100%;
+    max-width: 250px; /* You can adjust this value for different screen sizes */
+    height: auto;
+    object-fit: cover; /* Maintains the aspect ratio */
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .image-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Media Queries for responsiveness */
+  @media (max-width: 768px) {
+    .image-block-container {
+      padding: 8px;
+    }
+  
+    .image-block {
+      max-width: 180px; /* Smaller images on smaller devices */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .image-block-container {
+      padding: 4px;
+    }
+  
+    .image-block {
+      max-width: 150px; /* Even smaller images for mobile devices */
+    }
+  }
+  

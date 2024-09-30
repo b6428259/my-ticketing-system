@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plus, Minus, ArrowLeft } from 'lucide-react';
-import { Button, Tooltip, IconButton } from '@mui/material';
+import { Button, Tooltip, IconButton, CircularProgress  } from '@mui/material';
 import Smoke from '../../components/Effects/Smoke/Smoke';
 import backgroundImage from '../../assets/kamibbackground-notext-release.png';
 import logoImage from '../../assets/kamiblogo.jpg';
-import ImageBlock from '../../components/ImageBlock/ImageBlock';
-import characterData from './data/CharacterData'; // Import the character data
 import TicketTypeRow from './components/TicketTypeRow/TicketTypeRow';
 import AboutSection from './components/AboutSection/AboutSection'; // Import AboutSection
 import aboutData from './data/AboutData'; // Import about data
+import CharacterGrid from './components/CharacterGrid/CharacterGrid';
 
 
 import VideoPreview from './components/VideoPreview/VideoPreview';
@@ -26,6 +25,7 @@ const Kamibfun = () => {
     senior: 0,
   });
   const [loading, setLoading] = useState(false); // Loading state
+
 
   const TICKET_PRICES = {
     adults: 18.49,
@@ -108,19 +108,8 @@ const calculateTotalPrice = () => {
           title={aboutData.title} 
           description={aboutData.description}
         />
-        {/* Character Grid Section */}
-        <div id="character-section" className="grid grid-cols-3 grid-rows-2 gap-4 sm:gap-7 mt-4 sm:mt-5 mx-auto justify-items-center relative p-4 border-4 border-white rounded-lg" style={{ width: '95%', maxWidth: '800px' }}>
-          {characterData.map((character) => (
-            <ImageBlock
-              key={character.id}
-              src={character.src}
-              alt={character.alt}
-              tooltipTitle={character.tooltipTitle}
-              tooltipDescription={character.tooltipDescription}
-              style={character.style}
-            />
-          ))}
-        </div>
+         {/* Character Grid Section */}
+        <CharacterGrid />
 
          {/* Ticket Section */}
          <div id="ticket-section" className="mb-6">

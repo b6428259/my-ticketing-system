@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'; // Import PropTypes for prop validation
 
 const AboutSection = ({ title, description }) => {
   return (
@@ -13,6 +14,15 @@ const AboutSection = ({ title, description }) => {
       </div>
     </div>
   );
+};
+
+// Prop validation
+AboutSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string).isRequired
+  ]).isRequired,
 };
 
 export default AboutSection;
