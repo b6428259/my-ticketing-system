@@ -18,7 +18,7 @@ import posterImage from '../../assets/Images/kamibfunposter.jpg'; // Path to you
 const Kamibfun = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { concert } = location.state || { concert: { name: 'Unknown Concert' } };
+  const { concert } = location.state || { concert: { name: 'ขมิบฝัน - มหาวิทยาลับขอนแก่น' } };
   const [tickets, setTickets] = useState({
     adults: 0,
     child: 0,

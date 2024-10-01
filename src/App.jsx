@@ -6,6 +6,8 @@ import './components/Loading/Loading.css'; // Import CSS for Loading
 import Footer from "./components/Footer/Footer"; // Import Footer component
 import Navbar from "./components/Navbar/Navbar";
 import Reserve from "./pages/Reserve/Reserve";
+import Login from "./pages/Authentication/Login/Login";
+import Register from "./pages/Authentication/Register/Register";
 
 // Lazy load other components
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -52,6 +54,8 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/contact-us" element={<ContactUs />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
             </Routes>
           </Suspense>
           <Footer /> {/* Footer will appear globally */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip, CircularProgress } from '@mui/material';
 import { Info } from 'lucide-react';
-import './ImageBlock.css'; // Custom CSS styles
+import './ImageBlock.css'; // Import a CSS file for custom styles
 
 const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
   const [loading, setLoading] = useState(true);
@@ -52,22 +52,35 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
       placement="top"
       classes={{ tooltip: 'custom-tooltip' }}
     >
-      <div className="image-block-container overflow-hidden rounded-lg relative" style={style}>
+      <div
+        className={`overflow-hidden rounded-lg relative image-block-container ${
+          inView ? 'image-slide-up-container' : ''
+        }`}
+        style={style}
+        ref={imageRef}
+      >
         {loading && (
           <div className="image-loader">
             <CircularProgress style={{ color: 'white' }} />
           </div>
         )}
-        <img
-          ref={imageRef}
-          src={src}
-          alt={alt}
-          loading="eager"
-          onLoad={handleImageLoad}
-          className={`image-block rounded-lg shadow-lg bg-black bg-opacity-80 border-2 border-white transition duration-300 transform ${
-            loading ? 'invisible' : 'hover:scale-110'
-          } ${inView ? 'animate-slide-up' : ''}`}
-        />
+        <div className="image-zoom-wrapper">
+          <img
+            src={src}
+            alt={alt}
+            loading="eager"
+            onLoad={handleImageLoad}
+            className={`rounded-lg shadow-lg bg-black bg-opacity-80 border-2 border-white image-zoom ${
+              loading ? 'invisible' : ''
+            }`}
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxWidth: '250px',
+              objectFit: 'cover',
+            }}
+          />
+        </div>
       </div>
     </Tooltip>
   );

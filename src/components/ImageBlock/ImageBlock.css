@@ -1,94 +1,81 @@
+/* Slide-Up Animation */
 @keyframes slideUp {
-    0% {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.animate-slide-up {
-    animation: slideUp 1s ease-out forwards;
-}
-
-.custom-tooltip {
-    transform: scale(0.9);
+  0% {
+    transform: translateY(20px);
     opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.image-slide-up-container {
+  animation: slideUp 1s ease-out forwards;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Zoom on Hover */
+.image-zoom {
+  transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
+}
+
+.image-zoom:hover {
+  transform: scale(1.1); /* Zoom in slightly on hover */
+}
+
+/* Custom Tooltip */
+.custom-tooltip {
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .custom-tooltip-visible {
-    transform: scale(1);
-    opacity: 1;
+  transform: scale(1);
+  opacity: 1;
 }
 
 .tooltip-content {
-    display: flex;
-    align-items: center;
-    flex-direction: column; /* Aligns items in a column */
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .tooltip-title {
-    font-weight: bold;
-    margin: 0;
-    font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  font-size: 16px;
 }
 
 .tooltip-description {
-    margin: 5px 0 0 0; /* Add margin-top for spacing */
-    font-size: 12px;
-    opacity: 0.8;
+  margin: 5px 0 0 0;
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 .tooltip-icon {
-    margin-left: 8px;
-    color: white; /* Change color based on your design */
+  margin-left: 8px;
+  color: white;
 }
 
-.image-block-container {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .image-block-container {
+    padding: 8px;
   }
-  
-  .image-block {
-    width: 100%;
-    max-width: 250px; /* You can adjust this value for different screen sizes */
-    height: auto;
-    object-fit: cover; /* Maintains the aspect ratio */
-    transition: transform 0.3s ease-in-out;
+
+  .image-zoom {
+    max-width: 180px; /* Smaller images on smaller devices */
   }
-  
-  .image-loader {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 480px) {
+  .image-block-container {
+    padding: 4px;
   }
-  
-  /* Media Queries for responsiveness */
-  @media (max-width: 768px) {
-    .image-block-container {
-      padding: 8px;
-    }
-  
-    .image-block {
-      max-width: 180px; /* Smaller images on smaller devices */
-    }
+
+  .image-zoom {
+    max-width: 150px; /* Even smaller images for mobile devices */
   }
-  
-  @media (max-width: 480px) {
-    .image-block-container {
-      padding: 4px;
-    }
-  
-    .image-block {
-      max-width: 150px; /* Even smaller images for mobile devices */
-    }
-  }
-  
+}

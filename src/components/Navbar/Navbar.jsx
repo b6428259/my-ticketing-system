@@ -21,6 +21,9 @@ const Navbar = ({ isVisible }) => {
         <Link to="/help" className="text-white hover:text-gray-300 transition duration-200">
           Help
         </Link>
+        <Link to="/login" className="text-white hover:text-gray-300 transition duration-200">
+          Login
+        </Link> {/* Add the login link */}
       </div>
     </nav>
   );
