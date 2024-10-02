@@ -17,6 +17,7 @@ const Kamibfun = lazy(() => import("./pages/Kamibfun/Kamib"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService/TermsOfService"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
+const UserProfile = lazy(() => import("./pages/UserProfile/UserProfile"));
 
 function App() {
   const [loading, setLoading] = useState(true); // Loading state
@@ -56,6 +57,7 @@ function App() {
               <Route path="/contact-us" element={<ContactUs />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/user-profile" element={<UserProfile />} />
             </Routes>
           </Suspense>
           <Footer /> {/* Footer will appear globally */}

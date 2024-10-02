@@ -10,26 +10,48 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+    // Function to get the JWT token from cookies
+  function getTokenFromCookies() {
+    const cookieString = document.cookie;
+    const cookies = cookieString.split("; ");
+    for (const cookie of cookies) {
+      const [name, value] = cookie.split("=");
+      if (name === "token") {
+        return value;
+      }
+    }
+    return null;
+  }
+
   useEffect(() => {
     const fetchConcerts = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('http://localhost:8080/api/v1/concert');
-        setConcerts(response.data.data); // Accessing the `data` array from the API response
+        const response = await axios.get('http://localhost:8080/api/v1/concert', {
+          withCredentials: true, // Send the cookie
+        });
+        setConcerts(response.data.data);
       } catch (error) {
         console.error('Error fetching concerts:', error);
-        setError('Failed to load concerts. Please try again later.');
+        if (error.response && error.response.status === 401) {
+          setError("Session expired. Please log in again.");
+          navigate('/login');
+        } else {
+          setError('Failed to load concerts. Please try again later.');
+        }
       } finally {
         setIsLoading(false);
       }
     };
-
+    
+  
     fetchConcerts();
-  }, []);
+  }, [navigate]);
 
   const handleFeaturedConcertClick = () => {
-    navigate('/kamibfun'); // Navigate to Kamibfun page
+    navigate('/concerts/1'); // Redirect to the concert details page
   };
+  
 
   const FeaturedConcertCard = () => {
     return (
@@ -69,31 +91,30 @@ export default function Home() {
 
           {/* Recommended Concerts Section */}
           <section className="p-8">
-            <h2 className="text-2xl font-semibold mb-4">Recommended for you</h2>
-            {concerts.length > 0 ? (
-              <div className="overflow-x-auto flex space-x-4 scrollbar-hide">
-                {concerts.map((concert) => (
-                  <ConcertCard key={concert.concertId} concert={concert} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center text-red-600">{error}</div>
-            )}
-          </section>
+                    <h2 className="text-2xl font-semibold mb-4">Recommended for you</h2>
+                    {concerts.length > 0 ? (
+                        <div className="overflow-x-auto flex space-x-4 scrollbar-hide">
+                            {concerts.map((concert) => (
+                                <ConcertCard key={concert.concertId} concert={concert} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-red-600">{error || 'No concerts available.'}</div>
+                    )}
+                </section>
 
-          {/* Upcoming Show Section */}
-          <section className="p-8">
-            <h2 className="text-2xl font-semibold mb-4">Upcoming Shows</h2>
-            {concerts.length > 0 ? (
-              <div className="overflow-x-auto flex space-x-4 scrollbar-hide">
-                {concerts.map((concert) => (
-                  <ConcertCard key={concert.concertId} concert={concert} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center text-red-600">{error}</div>
-            )}
-          </section>
+                <section className="p-8">
+                    <h2 className="text-2xl font-semibold mb-4">Upcoming Shows</h2>
+                    {concerts.length > 0 ? (
+                        <div className="overflow-x-auto flex space-x-4 scrollbar-hide">
+                            {concerts.map((concert) => (
+                                <ConcertCard key={concert.concertId} concert={concert} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-red-600">{error || 'No upcoming shows.'}</div>
+                    )}
+                </section>
         </>
       )}
     </div>
