@@ -1,0 +1,4 @@
+/* Add this in your CSS file */
+.nextui-tabs .nextui-tab[data-selected=true] {
+    border-color: #06b6d4; /* Change this to your selected color */
+}

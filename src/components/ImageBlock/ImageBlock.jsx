@@ -70,7 +70,7 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
             alt={alt}
             loading="eager"
             onLoad={handleImageLoad}
-            className={`rounded-lg shadow-lg bg-black bg-opacity-80 border-2 border-white image-zoom ${
+            className={`rounded-lg shadow-lg bg-black bg-opacity-80 border-1 border-black image-zoom ${
               loading ? 'invisible' : ''
             }`}
             style={{

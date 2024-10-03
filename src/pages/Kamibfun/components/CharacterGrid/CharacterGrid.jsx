@@ -7,15 +7,18 @@ const CharacterGrid = () => {
   return (
     <div
       id="character-section"
-      className="character-grid mt-6 mx-auto justify-items-center p-4 border-4 border-white rounded-lg"
+      className="character-grid mt-6 mx-auto justify-items-center p-4 border-1 border-black rounded-lg"
       style={{
         width: '85%',
         maxWidth: '1000px',
-
+        
       }}
     >
       {characterData.map((character) => (
-        <div key={character.id} style={{ gridArea: character.style.gridArea }}>
+        <div key={character.id} 
+        style={{ 
+          gridArea: character.style.gridArea,
+           }}>
           <ImageBlock
             src={character.src}
             alt={character.alt}

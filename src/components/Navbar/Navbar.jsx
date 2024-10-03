@@ -1,88 +1,103 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+// src/components/Navbar.js
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import AudiotrackIcon from '@mui/icons-material/Audiotrack';
-import axios from 'axios';
+import LoginModal from '../../pages/Authentication/Login/LoginModal';
+import { AuthContext } from '../../contexts/AuthContext';
+import { User } from '@nextui-org/react';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
+import { useDisclosure } from '@nextui-org/react';
+import { Button } from '@nextui-org/react';
+import LogoutModal from '../Modals/LogoutModal'; // Import the new component
+import { useNavigate } from 'react-router-dom';
+
 
 const Navbar = () => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (token) {
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                    const response = await axios.get('http://localhost:8080/api/v1/users/me');
-                    setUser(response.data);
-                }
-            } catch (error) {
-                console.error('Error fetching user:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
+  const onPressSettings = () => {
+    navigate('/user-settings');
+    console.log("Settings button pressed");
+  };
+  
 
-        fetchUser();
-    }, []);
+  return (
+    <nav className="flex justify-between items-center p-6 bg-black">
+      <div className="text-xl font-bold flex items-center">
+        <AudiotrackIcon className="mr-2" />
+        <Link to="/" className="text-white hover:text-gray-300 transition duration-200">
+          SpotOn
+        </Link>
+      </div>
+      <div className="space-x-4 flex items-center">
+        {user ? (
+          <>
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Button 
+                  className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-6"
+                  endContent={<span className="ml-2">▼</span>}
+                >
+                  <User
+                    avatarProps={{
+                      isBordered: true,
+                      src: user.imageUrl,
+                    }}
+                    classNames={{
+                      name: "text-white",
+                      description: "text-gray-300",
+                    }}
+                    name={`${user.fname} ${user.lname}`}
+                    description={user.role}
+                  />
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu aria-label="User Actions" variant="flat">
+                <DropdownItem key="profile" textValue="Profile" isReadOnly="true">
+                  <div className="font-bold">Signed in as</div>
+                  <div>{user.email}</div>
+                </DropdownItem>
+                <DropdownItem key="blank" textValue="blank" isReadOnly="true">
+                  <hr />
+                </DropdownItem>
+                <DropdownItem key="settings" textValue="My Settings" onPress={
+                  onPressSettings
+                }>
+                  Settings
+                </DropdownItem>
+                <DropdownItem key="analytics" textValue="Analytics">
+                  Analytics
+                </DropdownItem>
+                <DropdownItem key="help_and_feedback" textValue="Help & Feedback">
+                  Help & Feedback
+                </DropdownItem>
+                <DropdownItem 
+                  key="logout" 
+                  className="text-danger" 
+                  color="danger" 
+                  textValue="Log Out"
+                  onPress={onOpen} // Open modal on press
+                >
+                  Log Out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
 
-    const handleLogout = async () => {
-        try {
-            await axios.post('http://localhost:8080/api/v1/users/logout', null, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                }
-            });
-            localStorage.removeItem('token');
-            setUser(null);
-            navigate('/');
-        } catch (error) {
-            console.error('Error logging out:', error);
-        }
-    };
-    
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    return (
-        <nav className="flex justify-between items-center p-6 bg-black">
-            <div className="text-xl font-bold flex items-center">
-                <AudiotrackIcon className="mr-2" />
-                <Link to="/" className="text-white hover:text-gray-300 transition duration-200">
-                    SpotOn
-                </Link>
-            </div>
-            <div className="space-x-4">
-                <Link to="/" className="text-white hover:text-gray-300 transition duration-200">
-                    Home
-                </Link>
-                <Link to="/about" className="text-white hover:text-gray-300 transition duration-200">
-                    About
-                </Link>
-                <Link to="/help" className="text-white hover:text-gray-300 transition duration-200">
-                    Help
-                </Link>
-                {user ? (
-                    <>
-                        <span className="text-white">{user.email}</span>
-                        <button
-                            onClick={handleLogout}
-                            className="text-white hover:text-gray-300 transition duration-200"
-                        >
-                            Logout
-                        </button>
-                    </>
-                ) : (
-                    <Link to="/login" className="text-white hover:text-gray-300 transition duration-200">
-                        Login
-                    </Link>
-                )}
-            </div>
-        </nav>
-    );
+            {/* Use the LogoutModal component */}
+            <LogoutModal 
+              isOpen={isOpen} 
+              onClose={onOpenChange} 
+              logout={logout} 
+            />
+          </>
+        ) : (
+          <LoginModal />
+        )}
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;

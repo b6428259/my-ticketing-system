@@ -6,8 +6,12 @@ import './components/Loading/Loading.css'; // Import CSS for Loading
 import Footer from "./components/Footer/Footer"; // Import Footer component
 import Navbar from "./components/Navbar/Navbar";
 import Reserve from "./pages/Reserve/Reserve";
-import Login from "./pages/Authentication/Login/Login";
+// import Login from "./pages/Authentication/Login/Login";
 import Register from "./pages/Authentication/Register/Register";
+import { AuthProvider } from "./contexts/AuthContext";
+import { NextUIProvider } from '@nextui-org/react';
+import { StrictMode } from 'react';
+
 
 // Lazy load other components
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -17,7 +21,7 @@ const Kamibfun = lazy(() => import("./pages/Kamibfun/Kamib"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService/TermsOfService"));
 const ContactUs = lazy(() => import("./pages/ContactUs/ContactUs"));
-const UserProfile = lazy(() => import("./pages/UserProfile/UserProfile"));
+const UserSettings = lazy(() => import("./pages/UserSettings/UserSettings"));
 
 function App() {
   const [loading, setLoading] = useState(true); // Loading state
@@ -45,6 +49,7 @@ function App() {
         <Loading />
       ) : (
         <>
+          <div className="app-container">
           {isNavbarVisible && <Navbar />} {/* Render Navbar only if visible */}
           <Suspense fallback={<Loading />}>
             <Routes>
@@ -55,12 +60,13 @@ function App() {
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/contact-us" element={<ContactUs />} />
-              <Route path="/login" element={<Login />} />
+              {/* <Route path="/login" element={<Login />} /> */}
               <Route path="/register" element={<Register />} />
-              <Route path="/user-profile" element={<UserProfile />} />
+              <Route path="/user-settings" element={<UserSettings />} />
             </Routes>
           </Suspense>
           <Footer /> {/* Footer will appear globally */}
+          </div>
         </>
       )}
     </>
@@ -70,8 +76,17 @@ function App() {
 // Wrap App with Router
 export default function AppWithRouter() {
   return (
-    <Router>
-      <App />
-    </Router>
+    <StrictMode>
+    <NextUIProvider>
+      <AuthProvider>
+        <Router>
+      <main className="dark text-foreground bg-background">
+    <App />
+      </main>
+        </Router>
+      </AuthProvider>
+    </NextUIProvider>
+  </StrictMode>
+    
   );
 }

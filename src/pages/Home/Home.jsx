@@ -10,18 +10,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-    // Function to get the JWT token from cookies
-  function getTokenFromCookies() {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split("; ");
-    for (const cookie of cookies) {
-      const [name, value] = cookie.split("=");
-      if (name === "token") {
-        return value;
-      }
-    }
-    return null;
-  }
 
   useEffect(() => {
     const fetchConcerts = async () => {
@@ -49,7 +37,7 @@ export default function Home() {
   }, [navigate]);
 
   const handleFeaturedConcertClick = () => {
-    navigate('/concerts/1'); // Redirect to the concert details page
+    navigate('/kamibfun'); // Redirect to the concert details page
   };
   
 

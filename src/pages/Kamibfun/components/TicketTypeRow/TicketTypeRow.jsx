@@ -8,11 +8,11 @@ const TicketTypeRow = ({ type, label, price, count, onIncrement, onDecrement }) 
       <span>{`${label} ($${price}):`}</span>
       <div className="flex items-center space-x-2">
         <IconButton onClick={onDecrement} aria-label={`Decrease ${type}`} disabled={count <= 0}>
-          <Minus />
+          <Minus color="#fcfcfc"/>
         </IconButton>
         <span>{count}</span>
         <IconButton onClick={onIncrement} aria-label={`Increase ${type}`} disabled={count >= 10}>
-          <Plus />
+          <Plus color="#fcfcfc" />
         </IconButton>
       </div>
     </div>
