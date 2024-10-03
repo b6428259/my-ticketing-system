@@ -1,0 +1,5 @@
+/* src/pages/PrivacyPolicy.css */
+  .section:hover {
+    transform: scale(1.02); /* ขยายเล็กน้อยเมื่อเลื่อนเมาส์ไป */
+  }
+  

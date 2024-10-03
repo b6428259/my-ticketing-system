@@ -1,0 +1,39 @@
+version: '3.8'  # Docker Compose version
+
+services:
+  mysql:
+    image: mysql:8.0  # Use the latest stable version of MySQL 8
+    container_name: ticket-system
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Set root password
+      MYSQL_DATABASE: concerts_db         # Set default database name
+      MYSQL_USER: admin                   # Set custom user
+      MYSQL_PASSWORD: admin12021234       # Set custom user password
+    ports:
+      - "3306:3306"  # Map port 3306 on the host to the container
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persist MySQL data
+    networks:
+      - concert_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_container
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: admin12021234  # Must match the MySQL root password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - concert_network
+
+volumes:
+  mysql_data:  # This will persist MySQL data even after the container is down
+
+networks:
+  concert_network:
+    driver: bridge  # Default Docker network driver

@@ -1,0 +1,81 @@
+/* Slide-Up Animation */
+@keyframes slideUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.image-slide-up-container {
+  animation: slideUp 1s ease-out forwards;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Zoom on Hover */
+.image-zoom {
+  transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
+}
+
+.image-zoom:hover {
+  transform: scale(1.1); /* Zoom in slightly on hover */
+}
+
+/* Custom Tooltip */
+.custom-tooltip {
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.custom-tooltip-visible {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.tooltip-title {
+  font-weight: bold;
+  margin: 0;
+  font-size: 16px;
+}
+
+.tooltip-description {
+  margin: 5px 0 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.tooltip-icon {
+  margin-left: 8px;
+  color: white;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+  .image-block-container {
+    padding: 8px;
+  }
+
+  .image-zoom {
+    max-width: 180px; /* Smaller images on smaller devices */
+  }
+}
+
+@media (max-width: 480px) {
+  .image-block-container {
+    padding: 4px;
+  }
+
+  .image-zoom {
+    max-width: 150px; /* Even smaller images for mobile devices */
+  }
+}

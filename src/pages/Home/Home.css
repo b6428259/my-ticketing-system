@@ -1,0 +1,19 @@
+.featured-concert-card {
+    width: 80%; /* Full width of the parent container */
+    max-width: 600px; /* You can set a max-width for better control */
+    margin: 0 auto; /* Centering the card */
+    overflow: hidden; /* Prevent overflow */
+    border-radius: 10px; /* Rounded corners */
+  }
+  
+  .featured-concert-card img {
+    display: block; /* Ensures there's no bottom space in images */
+    width: 80%; /* Make image responsive */
+    height: auto; /* Maintain aspect ratio */
+    transition: transform 0.3s ease; /* Smooth scaling effect on hover */
+  }
+  
+  .featured-concert-card:hover img {
+    transform: scale(1.05); /* Slight zoom on hover */
+  }
+  

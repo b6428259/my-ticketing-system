@@ -1,0 +1,64 @@
+/* VideoPreview.css */
+.video-preview {
+    position: relative;
+    overflow: hidden; /* Hide overflow for rounded corners */
+  }
+  
+  .video-preview video {
+    width: 100%; /* Make the video responsive */
+    height: 100%; /* Full height */
+    object-fit: cover; /* Cover to maintain aspect ratio */
+    border-radius: 8px; /* Optional: round corners */
+    transition: transform 0.3s; /* Smooth transition on hover */
+  }
+  
+  .video-preview:hover video {
+    transform: scale(1.05); /* Slightly enlarge video on hover */
+  }
+  
+  /* Scroll Indicator Styles */
+  .scroll-indicator {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white; /* Text color */
+    z-index: 10; /* Ensure it's above the video */
+  }
+  
+  .scroll-text {
+    font-size: 24px; /* Size of the scrolling text */
+    margin-bottom: 8px;
+    animation: scroll-text 2s infinite; /* Animation */
+  }
+  
+  .arrow-down {
+    font-size: 30px; /* Size of the arrow */
+  }
+
+  .mute-button {
+    background: rgba(0, 0, 0, 0.7); /* Initial background color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.3s ease; /* Transition background and transform */
+  }
+
+  
+  
+  .mute-button:hover {
+    background: rgba(255, 255, 255, 0.2); /* Change background on hover */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+  }
+  
+  
+  /* Animation for the scrolling text */
+  @keyframes scroll-text {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
