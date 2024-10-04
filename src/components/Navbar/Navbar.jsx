@@ -21,6 +21,16 @@ const Navbar = () => {
     navigate('/user-settings');
     console.log("Settings button pressed");
   };
+
+  const onPressMyTickets = () => {
+    navigate('/my-tickets');
+    console.log("My Tickets button pressed");
+  }
+
+  const onPressScanTickets = () => {
+    navigate('/scan-ticket');
+    console.log("Scan Tickets button pressed");
+  }
   
 
   return (
@@ -62,7 +72,14 @@ const Navbar = () => {
                 <DropdownItem key="blank" textValue="blank" isReadOnly="true">
                   <hr />
                 </DropdownItem>
-                <DropdownItem key="ticket" textValue="ticket">
+                <DropdownItem key="scanticket" textValue="scanticket" onPress={
+                  onPressScanTickets
+                }>
+                  Scan Tickets
+                </DropdownItem>
+                <DropdownItem key="ticket" textValue="ticket" onPress={
+                  onPressMyTickets
+                }>
                   My Tickets
                 </DropdownItem>
                 <DropdownItem key="settings" textValue="My Settings" onPress={
@@ -70,6 +87,7 @@ const Navbar = () => {
                 }>
                   Settings
                 </DropdownItem>
+                
                 <DropdownItem key="analytics" textValue="Analytics">
                   Analytics
                 </DropdownItem>
