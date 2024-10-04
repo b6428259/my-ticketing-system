@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/SpotUp/', // Change to your repository name
+  base: '/', // Change to your repository name
 });
