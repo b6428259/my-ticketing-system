@@ -62,6 +62,9 @@ const Navbar = () => {
                 <DropdownItem key="blank" textValue="blank" isReadOnly="true">
                   <hr />
                 </DropdownItem>
+                <DropdownItem key="ticket" textValue="ticket">
+                  My Tickets
+                </DropdownItem>
                 <DropdownItem key="settings" textValue="My Settings" onPress={
                   onPressSettings
                 }>
