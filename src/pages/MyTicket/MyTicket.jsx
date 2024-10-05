@@ -1,16 +1,25 @@
 // src/MyTickets.jsx
-
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../contexts/AuthContext'; // Import your AuthContext
+import { Link } from 'react-router-dom';
 
 const MyTickets = () => {
+    const { user, isAuthenticated } = useAuth(); // Get user info from context
     const [tickets, setTickets] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
-    const userId = 4; // Assume this is obtained from logged-in user context
-    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpLm9vb25ubjE1QGdtYWlsLmNvbSIsImV4cCI6MTcyODA5NTEwNywiaWF0IjoxNzI4MDU5MTA3fQ.ry6vXNh8mcgYvWan65eOWSqDh2MBo1RJezkg1BFv7z4'; // Replace with actual JWT token
+
+    const userId = user ? user.id : null; 
+    const token = localStorage.getItem('token'); 
 
     useEffect(() => {
         const fetchTickets = async () => {
+            if (!isAuthenticated || !userId || !token) {
+                setError('You need to be logged in to view your tickets.');
+                setLoading(false);
+                return;
+            }
+
             setLoading(true);
             try {
                 const response = await fetch(`http://localhost:8080/api/v1/tickets/user/${userId}`, {
@@ -35,26 +44,28 @@ const MyTickets = () => {
         };
 
         fetchTickets();
-    }, [userId, token]);
+    }, [userId, token, isAuthenticated]);
 
     return (
         <div>
             <h1>My Tickets</h1>
             {loading && <p>Loading tickets...</p>}
-            {error && <p>Error: {error}</p>}
-            {tickets.length === 0 && !loading ? (
+            {error && <p className="error-message">Error: {error}</p>}
+            {!loading && tickets.length === 0 && (
                 <p>No tickets found.</p>
-            ) : (
+            )}
+            {!loading && tickets.length > 0 && (
                 <ul>
                     {tickets.map(ticket => (
                         <li key={ticket.id}>
                             <h2>{ticket.concert.name}</h2>
-                            <p>TickketID : {ticket.id}</p>
+                            <p>Ticket ID: {ticket.id}</p>
                             <p>Ticket Code: {ticket.ticketCode}</p>
                             <p>Status: {ticket.ticketStatus}</p>
-                            <p>Price: ${ticket.ticketPrice}</p>
+                            <p>Price: ${ticket.ticketPrice.toFixed(2)}</p>
                             <p>Buy Date: {new Date(ticket.ticketBuyDate).toLocaleString()}</p>
-                            <a href={`/my-tickets/detail/${ticket.id}`}>View Details</a>
+                            {/* Use Link for navigation to ticket details */}
+                            <Link to={`/my-tickets/detail/${ticket.id}`}>View Details</Link>
                         </li>
                     ))}
                 </ul>

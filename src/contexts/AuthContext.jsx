@@ -1,6 +1,7 @@
-// AuthContext.jsx
-import React, { createContext, useState, useEffect } from 'react';
+// src/contexts/AuthContext.jsx
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 
 export const AuthContext = createContext();
 
@@ -8,6 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,6 +24,9 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         console.error('Error fetching user:', error);
         setError(error);
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -44,36 +50,31 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (fname, lname, email, password) => {
     try {
-        const response = await axios.post('http://localhost:8080/api/v1/users/register', {
-            fname: fname, // Use the passed fname
-            lname: lname, // Use the passed lname
-            email: email,
-            password: password,
-            imageUrl: "", // Optional: you could allow users to input a profile picture URL
-            tel: "" // Optional: you could add a field for phone number
-        });
-        setError(null);
-        console.log(response);
-        // Optionally, directly log in the user upon registration success
-        await login(email, password);
+      const response = await axios.post('http://localhost:8080/api/v1/users/register', {
+        fname,
+        lname,
+        email,
+        password,
+        imageUrl: "",
+        tel: ""
+      });
+      setError(null);
+      await login(email, password);
     } catch (error) {
-        setError(error);
-        throw error;
+      setError(error);
+      throw error;
     }
-};
+  };
 
-
-
-const checkEmail = async (email) => {
-  try {
+  const checkEmail = async (email) => {
+    try {
       const response = await axios.get(`http://localhost:8080/api/v1/users/checkEmail`, { params: { email } });
-      return response.data; // Returns true if the email exists
-  } catch (error) {
+      return response.data;
+    } catch (error) {
       console.error('Error checking email:', error);
-      throw error; // Propagate the error
-  }
-};
-
+      throw error;
+    }
+  };
 
   const logout = async () => {
     try {
@@ -82,12 +83,14 @@ const checkEmail = async (email) => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
+    } catch (error) {
+      console.error('Error logging out:', error);
+    } finally {
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
       setUser(null);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error logging out:', error);
+      setError(null);
+      navigate('/login');
     }
   };
 
@@ -98,4 +101,9 @@ const checkEmail = async (email) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+// Create a custom hook to use the AuthContext
+export const useAuth = () => {
+  return useContext(AuthContext);
 };
