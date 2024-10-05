@@ -1,4 +1,3 @@
-// App.jsx
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, useState, Suspense, lazy } from "react";
 import Loading from "./components/Loading/Loading"; // Import Loading component
@@ -63,7 +62,7 @@ function App() {
                                 <Route path="/register" element={<Register />} />
                                 <Route path="/user-settings" element={<UserSettings />} />
                                 <Route path="/my-tickets" element={<MyTickets />} />
-                                <Route path="/my-tickets/detail/:id" element={<TicketDetail />} />
+                                <Route path="/my-tickets/detail/:ticketId" element={<TicketDetail />} />
                                 <Route path="/scan-ticket" element={<ScanTicket />} />
                             </Routes>
                         </Suspense>
@@ -79,15 +78,15 @@ function App() {
 export default function AppWithRouter() {
     return (
         <StrictMode>
-            <NextUIProvider>
-                <CombinedProvider> {/* Use the combined provider here */}
-                    <Router>
+            <Router> {/* Move Router here to wrap the entire application */}
+                <NextUIProvider>
+                    <CombinedProvider> {/* Use the combined provider here */}
                         <main className="dark text-foreground bg-background">
                             <App />
                         </main>
-                    </Router>
-                </CombinedProvider>
-            </NextUIProvider>
+                    </CombinedProvider>
+                </NextUIProvider>
+            </Router>
         </StrictMode>
     );
 }

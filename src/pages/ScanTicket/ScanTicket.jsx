@@ -1,33 +1,39 @@
 // src/pages/ScanTicket/ScanTicket.jsx
 import React, { useState } from 'react';
-import { useTicket } from '../../contexts/TicketContext'; // Import the TicketContext
+import { useTicket } from '../../contexts/TicketContext';
+import QrScanner from 'react-qr-scanner';
 
 const ScanTicket = () => {
-    const [ticketCode, setTicketCode] = useState('');
-    const { handleScan, responseMessage, error, loading } = useTicket(); // Destructure from context
+    const [cameraOpen, setCameraOpen] = useState(false);
+    const { handleScan, responseMessage, error, scanning } = useTicket();
 
-    // Ensure the form submission triggers handleScan
-    const handleSubmit = (event) => {
-        event.preventDefault(); // Prevent default form submission
-        handleScan(ticketCode); // Call handleScan from context
-        setTicketCode(''); // Clear the input after submitting (optional)
+    const handleScanResult = (result) => {
+        if (result) {
+            handleScan(result.text); // ใช้ result.text เพื่อดึงค่า QR ที่สแกนได้
+            setCameraOpen(false); // ปิดกล้องหลังจากสแกนเสร็จ
+        }
+    };
+
+    const handleError = (err) => {
+        console.error('Error scanning QR code: ', err);
     };
 
     return (
         <div>
             <h1>Scan Your Ticket</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Enter Ticket Code"
-                    value={ticketCode}
-                    onChange={(e) => setTicketCode(e.target.value)}
-                    required
+
+            <button onClick={() => setCameraOpen(!cameraOpen)}>
+                {cameraOpen ? 'Close Camera' : 'Open Camera to Scan QR Code'}
+            </button>
+
+            {cameraOpen && (
+                <QrScanner
+                    delay={300}
+                    onError={handleError}
+                    onScan={handleScanResult}
+                    style={{ width: '100%' }}
                 />
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Scanning...' : 'Scan Ticket'}
-                </button>
-            </form>
+            )}
 
             {responseMessage && <p style={{ color: 'green' }}>{responseMessage}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}

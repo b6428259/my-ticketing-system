@@ -15,31 +15,44 @@ export const TicketProvider = ({ children }) => {
     const [scanning, setScanning] = useState(false); // Loading state for scanning tickets
     const [error, setError] = useState(null);
 
-    // Fetch ticket details
     const fetchTicketDetail = async (id) => {
         setLoading(true); // Set loading state for ticket fetching
         try {
             const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No token found. Please log in again.');
+            }
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const response = await axios.get(`http://localhost:8080/api/v1/tickets/${id}/detail`);
             setTicket(response.data);
             setError(null);
         } catch (error) {
             console.error('Error fetching ticket:', error);
-            setError(error.message);
+            if (error.response && error.response.status === 401) {
+                // Unauthorized, token might be expired
+                localStorage.removeItem('token');
+                setError('Session expired. Please log in again.');
+                setTicket(null);
+            } else {
+                setError(error.message);
+            }
         } finally {
             setLoading(false); // Reset loading state after fetching
         }
     };
+    
 
     const handleScan = async (ticketCode) => {
         if (scanning) return; // Prevent running if already scanning
         setScanning(true);  // Set scanning state to true
         setResponseMessage('');
         setError('');
-
+    
         try {
             const token = localStorage.getItem('token'); // Get the token from local storage
+            if (!token) {
+                throw new Error('No token found. Please log in again.');
+            }
             const response = await axios.post(
                 'http://localhost:8080/api/v1/tickets/scan',
                 { ticketCode }, // Sending ticketCode in the request body
@@ -49,15 +62,23 @@ export const TicketProvider = ({ children }) => {
                     },
                 }
             );
-
+    
             setResponseMessage(response.data); // Set response message to show success
+            setError(null);
         } catch (error) {
             console.error('Error scanning ticket:', error);
-            setError(error.response ? error.response.data : 'An error occurred'); // Handle error
+            if (error.response && error.response.status === 401) {
+                // Unauthorized, token might be expired
+                localStorage.removeItem('token');
+                setError('Session expired. Please log in again.');
+            } else {
+                setError(error.response ? error.response.data : 'An error occurred');
+            }
         } finally {
             setScanning(false); // Always reset scanning state at the end
         }
     };
+    
 
     return (
         <TicketContext.Provider value={{
@@ -69,7 +90,10 @@ export const TicketProvider = ({ children }) => {
             handleScan,
             responseMessage
         }}>
+            {loading && <div>Loading ticket details...</div>}
+            {scanning && <div>Scanning ticket...</div>}
             {children}
         </TicketContext.Provider>
     );
+    
 };
