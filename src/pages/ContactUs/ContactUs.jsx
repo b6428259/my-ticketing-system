@@ -3,6 +3,7 @@ import React from 'react';
 
 const ContactUs = () => {
   return (
+    <div className="bg-gray-900">
     <div className="contact-us max-w-7xl mx-auto px-4 py-8">
       <h1>Contact Us</h1>
       <p>If you have any questions, feel free to reach out to us!</p>
@@ -21,6 +22,7 @@ const ContactUs = () => {
         </div>
         <button type="submit" className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800">Submit</button>
       </form>
+    </div>
     </div>
   );
 };

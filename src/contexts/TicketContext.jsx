@@ -78,6 +78,36 @@ export const TicketProvider = ({ children }) => {
             setScanning(false); // Always reset scanning state at the end
         }
     };
+
+    const purchaseTicket = async (userId, productId) => {
+        setLoading(true); // Set loading state for ticket purchasing
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('No token found. Please log in again.');
+            }
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            const response = await axios.post('http://localhost:8080/api/v1/tickets/buy', {
+                userId,
+                productId
+            });
+
+            setResponseMessage(response.data.message);
+            setError(null);
+            // Optionally update ticket state or any other relevant state
+        } catch (error) {
+            console.error('Error purchasing ticket:', error);
+            if (error.response && error.response.status === 401) {
+                localStorage.removeItem('token');
+                setError('Session expired. Please log in again.');
+            } else {
+                setError(error.response ? error.response.data.message : 'An error occurred during purchase.');
+            }
+        } finally {
+            setLoading(false); // Reset loading state after purchase attempt
+        }
+    };
     
 
     return (
@@ -88,7 +118,9 @@ export const TicketProvider = ({ children }) => {
             error,
             fetchTicketDetail,
             handleScan,
-            responseMessage
+            responseMessage,
+            purchaseTicket, // Expose purchaseTicket method
+
         }}>
             {loading && <div>Loading ticket details...</div>}
             {scanning && <div>Scanning ticket...</div>}

@@ -3,8 +3,8 @@ import React from 'react';
 
 const TermsOfService = () => {
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
+    <div className="min-h-screen bg-gray-900 p-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-900">
       <h1 className="text-4xl font-bold text-center text-white mb-6">Terms of Service</h1>
       <p className="text-lg text-center text-gray-700 mb-10">Welcome to our Terms of Service page. Here you will find the rules and regulations for using our services.</p>
       

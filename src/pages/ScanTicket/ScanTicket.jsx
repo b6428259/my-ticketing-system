@@ -1,17 +1,49 @@
 // src/pages/ScanTicket/ScanTicket.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTicket } from '../../contexts/TicketContext';
-import QrScanner from 'react-qr-scanner';
+import { Html5Qrcode } from 'html5-qrcode';
 
 const ScanTicket = () => {
     const [cameraOpen, setCameraOpen] = useState(false);
-    const { handleScan, responseMessage, error, scanning } = useTicket();
-
-    const handleScanResult = (result) => {
-        if (result) {
-            handleScan(result.text); // ใช้ result.text เพื่อดึงค่า QR ที่สแกนได้
-            setCameraOpen(false); // ปิดกล้องหลังจากสแกนเสร็จ
+    const { handleScan, responseMessage, error } = useTicket();
+    const html5QrCodeRef = useRef(null);
+    const [qrCodeScanner, setQrCodeScanner] = useState(null);
+    useEffect(() => {
+        // Initialize the QR code scanner
+        if (cameraOpen) {
+            const qrCodeScanner = new Html5Qrcode("qr-reader");
+            setQrCodeScanner(qrCodeScanner);
+    
+            console.log("Starting QR code scanner...");
+            qrCodeScanner.start(
+                { facingMode: "environment" },
+                {
+                    fps: 15, // Increase the frame rate
+                    qrbox: { width: 300, height: 300 }, // Increase the QR box size
+                },
+                handleScanResult,
+                handleError
+            ).then(() => {
+                console.log("QR code scanner started successfully");
+            }).catch(err => {
+                console.error("Failed to start QR code scanner:", err);
+            });
         }
+    
+        // Cleanup function to stop the scanner
+        return () => {
+            if (qrCodeScanner) {
+                qrCodeScanner.stop().catch(err => {
+                    console.error("Failed to stop scanning:", err);
+                });
+            }
+        };
+    }, [cameraOpen]);
+    
+
+    const handleScanResult = (decodedText, decodedResult) => {
+        handleScan(decodedText); // Use decodedText to extract the QR code value
+        setCameraOpen(false); // Close the camera after scanning
     };
 
     const handleError = (err) => {
@@ -27,12 +59,7 @@ const ScanTicket = () => {
             </button>
 
             {cameraOpen && (
-                <QrScanner
-                    delay={300}
-                    onError={handleError}
-                    onScan={handleScanResult}
-                    style={{ width: '100%' }}
-                />
+                <div id="qr-reader" style={{ width: '100%', height: '100%' }}></div>
             )}
 
             {responseMessage && <p style={{ color: 'green' }}>{responseMessage}</p>}

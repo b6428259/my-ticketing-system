@@ -1,0 +1,38 @@
+/* Regular font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Bold font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* Thin/Light font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Thin.otf') format('opentype');
+    font-weight: 300; /* Light/Thin weight */
+    font-style: normal;
+}
+
+/* Usage in CSS */
+.main-container {
+    font-family: "CustomFont", sans-serif;
+}
+
+.bold-text {
+    font-family: "CustomFont", sans-serif;
+    font-weight: bold; /* Matches the @font-face bold weight */
+}
+
+.thin-text {
+    font-family: "CustomFont", sans-serif;
+    font-weight: 300; /* Matches the @font-face thin weight */
+}

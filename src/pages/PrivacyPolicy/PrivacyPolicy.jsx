@@ -5,8 +5,8 @@ import './PrivacyPolicy.css';
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-  <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50">
+    <div className="min-h-screen bg-gray-900 p-8">
+  <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-900">
         <h1 className="text-4xl font-bold text-center text-white mb-6">Privacy Policy</h1>
         <p className="text-lg text-center text-gray-700 mb-10">
           Your privacy is important to us. This Privacy Policy explains how we collect, use, and share your personal information when you use our services.
