@@ -4,7 +4,29 @@
 
 /* App.css or index.css */
 
+/* Regular font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
+/* Bold font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* Thin/Light font-weight */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../../fonts/iannnnn-OWL-Thin.otf') format('opentype');
+    font-weight: 300; /* Light/Thin weight */
+    font-style: normal;
+}
 
 /* Global Styles */
 
@@ -14,16 +36,16 @@ html {
 
 /* Global Styles in your CSS */
 body {
-    font-family: "Prompt", sans-serif;
+    font-family: "CustomFont", sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: "Prompt", sans-serif;
+    font-family: "CustomFont", sans-serif;
 }
 
 p {
-    font-family: "Prompt", sans-serif;
+    font-family: "CustomFont", sans-serif;
 }
