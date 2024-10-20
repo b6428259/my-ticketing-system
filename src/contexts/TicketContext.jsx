@@ -15,15 +15,19 @@ export const TicketProvider = ({ children }) => {
     const [scanning, setScanning] = useState(false); // Loading state for scanning tickets
     const [error, setError] = useState(null);
 
+    const ip = 'http://34.142.203.93:8080/api/v1';
+
     const fetchTicketDetail = async (id) => {
         setLoading(true); // Set loading state for ticket fetching
         try {
             const token = localStorage.getItem('token');
+
             if (!token) {
                 throw new Error('No token found. Please log in again.');
             }
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            const response = await axios.get(`http://localhost:8080/api/v1/tickets/${id}/detail`);
+            const response = await axios.get(`${ip}/tickets/${id}`);
+          
             setTicket(response.data);
             setError(null);
         } catch (error) {
@@ -53,16 +57,14 @@ export const TicketProvider = ({ children }) => {
             if (!token) {
                 throw new Error('No token found. Please log in again.');
             }
-            const response = await axios.post(
-                'http://localhost:8080/api/v1/tickets/scan',
-                { ticketCode }, // Sending ticketCode in the request body
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`, // Include token in headers for authentication
-                    },
+            const response = await axios.post(`${ip}/tickets/scan`, {
+                ticketCode
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
                 }
-            );
-    
+            });
+
             setResponseMessage(response.data); // Set response message to show success
             setError(null);
         } catch (error) {
@@ -88,7 +90,7 @@ export const TicketProvider = ({ children }) => {
             }
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-            const response = await axios.post('http://localhost:8080/api/v1/tickets/buy', {
+            const response = await axios.post(`${ip}/tickets/purchase`, {
                 userId,
                 productId
             });

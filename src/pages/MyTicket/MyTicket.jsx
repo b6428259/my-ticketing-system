@@ -42,7 +42,7 @@ const MyTickets = () => {
     
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/tickets/user/${userId}`, {
+                const response = await fetch(`http://34.142.203.93:8080/api/v1/tickets/user/${userId}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

@@ -18,7 +18,7 @@ const Show = () => {
     useEffect(() => {
         const fetchConcert = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/v1/concert/${concertId}`);
+                const response = await axios.get(`http://34.142.203.93:8080/api/v1/concert/${concertId}`);
                 setConcert(response.data.data);
             } catch (error) {
                 console.error('Error fetching concert details:', error);

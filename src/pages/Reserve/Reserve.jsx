@@ -20,7 +20,7 @@ const Reserve = () => {
     useEffect(() => {
         const fetchRoundsAndProducts = async () => {
             try {
-                const roundResponse = await axios.get(`http://localhost:8080/api/v1/concert-rounds/by-concert/${concertId}`);
+                const roundResponse = await axios.get(`http://34.142.203.93:8080/api/v1/concert-rounds/by-concert/${concertId}`);
                 setRounds(roundResponse.data.data);
             } catch (error) {
                 console.error('Error fetching concert rounds:', error);
