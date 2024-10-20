@@ -14,7 +14,7 @@ export default function Home() {
         const fetchConcerts = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('http://34.142.203.93:8080/api/v1/concert', {
+                const response = await axios.get('https://34.142.203.93:8080/api/v1/concert', {
                     withCredentials: true, // Send the cookie
                 });
                 setConcerts(response.data.data);
