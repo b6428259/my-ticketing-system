@@ -4,7 +4,6 @@ import Loading from "./components/Loading/Loading"; // Import Loading component
 import './components/Loading/Loading.css'; // Import CSS for Loading 
 import Footer from "./components/Footer/Footer"; // Import Footer component
 import Navbar from "./components/Navbar/Navbar";
-import Reserve from "./pages/Reserve/Reserve";
 import Register from "./pages/Authentication/Register/Register";
 import { NextUIProvider } from '@nextui-org/react';
 import { StrictMode } from 'react';
@@ -23,6 +22,10 @@ const UserSettings = lazy(() => import("./pages/UserSettings/UserSettings"));
 const MyTickets = lazy(() => import("./pages/MyTicket/MyTicket"));
 const TicketDetail = lazy(() => import("./pages/MyTicket/components/TicketDetail/TicketDetail"));
 const ScanTicket = lazy(() => import("./pages/ScanTicket/ScanTicket"));
+const Show = lazy(() => import("./pages/Show/Show")); // Lazy load the Show component
+const Reserve = lazy(() => import("./pages/Reserve/Reserve")); // Lazy load the Reserve component
+
+
 
 function App() {
     const [loading, setLoading] = useState(true); // Loading state
@@ -53,7 +56,8 @@ function App() {
                             <Routes>
                                 <Route path="/" element={<Home />} /> {/* Set Home as the default page */}
                                 <Route path="/home" element={<Home />} />
-                                <Route path="/reserve" element={<Reserve />} />
+                                <Route path="/reserve/:concertId" element={<Reserve />} /> {/* Update Reserve route */}
+                    
                                 <Route path="/payment" element={<Payment />} />
                                 <Route path="/kamibfun" element={<Kamibfun />} />
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -64,6 +68,8 @@ function App() {
                                 <Route path="/my-tickets" element={<MyTickets />} />
                                 <Route path="/my-tickets/detail/:ticketId" element={<TicketDetail />} />
                                 <Route path="/scan-ticket" element={<ScanTicket />} />
+                                <Route path="/show/:concertId" element={<Show />} /> {/* Add Show route */}
+                                
                             </Routes>
                         </Suspense>
                         <Footer /> {/* Footer will appear globally */}

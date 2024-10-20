@@ -9,6 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const ip = 'http://34.142.203.93:8080';
   
   const navigate = useNavigate(); 
 
@@ -18,7 +20,8 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get('http://localhost:8080/api/v1/users/me');
+          const response = await axios.get(`${ip}/api/v1/users/me`);
+ 
           setUser(response.data);
         }
       } catch (error) {
@@ -37,7 +40,11 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/users/login', { email, password });
+      const response = await axios.post(`${ip}/api/v1/users/login`, {
+        email,
+        password,
+      });
+
       localStorage.setItem('token', response.data.token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data);
@@ -50,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (fname, lname, email, password) => {
     try {
-      const response = await axios.post('http://localhost:8080/api/v1/users/register', {
+      const response = await axios.post(`${ip}/api/v1/users/register`, {
         fname,
         lname,
         email,
@@ -68,7 +75,10 @@ export const AuthProvider = ({ children }) => {
 
   const checkEmail = async (email) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/users/checkEmail`, { params: { email } });
+      const response = await axios.post(`${ip}/api/v1/users/check-email`, {
+        email,
+      });
+
       return response.data;
     } catch (error) {
       console.error('Error checking email:', error);
@@ -78,7 +88,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('http://localhost:8080/api/v1/users/logout', null, {
+      await axios.post(`${ip}/api/v1/users/logout`, null, {
+        
+
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

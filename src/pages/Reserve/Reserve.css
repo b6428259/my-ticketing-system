@@ -1,0 +1,11 @@
+.button-icon {
+    background-color: transparent; /* ไม่มีพื้นหลัง */
+    border: none; /* ไม่มีกรอบ */
+    cursor: pointer;
+    color: #fff; /* สีของไอคอน */
+    transition: color 0.3s ease; /* เพิ่ม transition */
+}
+
+.button-icon:hover {
+    color: #ffcc00; /* เปลี่ยนสีเมื่อ hover */
+}

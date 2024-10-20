@@ -25,7 +25,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/v1/users/me');
+                const response = await axios.get('http://34.142.203.93:8080/api/v1/users/me');
                 setUser(response.data);
             } catch (err) {
                 setError(err.message);

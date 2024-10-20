@@ -10,6 +10,7 @@ import { useDisclosure } from '@nextui-org/react';
 import { Button } from '@nextui-org/react';
 import LogoutModal from '../Modals/LogoutModal'; // Import the new component
 import { useNavigate } from 'react-router-dom';
+import logo from '../../assets/testLogo1.png';
 
 
 const Navbar = () => {
@@ -31,14 +32,19 @@ const Navbar = () => {
     navigate('/scan-ticket');
     console.log("Scan Tickets button pressed");
   }
+
+  const logoPress = () => {
+    navigate('/');
+    console.log("Logo pressed");
+  }
   
 
   return (
     <nav className="flex justify-between items-center p-6 bg-black">
       <div className="text-xl font-bold flex items-center">
-        <AudiotrackIcon className="mr-2" />
+        <img src={logo} alt="logo" className="h-10 w-10 mr-2 cursor-pointer" onClick={logoPress}/>
         <Link to="/" className="text-white hover:text-gray-300 transition duration-200">
-          SpotOn
+          SpotUp
         </Link>
       </div>
       <div className="space-x-4 flex items-center">
