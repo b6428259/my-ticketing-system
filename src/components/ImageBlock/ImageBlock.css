@@ -1,3 +1,5 @@
+/* ImageBlock.css */
+
 /* Slide-Up Animation */
 @keyframes slideUp {
   0% {
@@ -46,12 +48,14 @@
   font-weight: bold;
   margin: 0;
   font-size: 16px;
+  font-family: 'CustomFont', sans-serif; /* Apply custom font */
 }
 
 .tooltip-description {
   margin: 5px 0 0 0;
   font-size: 12px;
   opacity: 0.8;
+  font-family: 'CustomFont', sans-serif; /* Apply custom font */
 }
 
 .tooltip-icon {

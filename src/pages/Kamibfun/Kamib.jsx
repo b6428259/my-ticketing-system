@@ -15,7 +15,8 @@ import VideoPreview from './components/VideoPreview/VideoPreview';
 import videoSrc from '../../assets/Videos/kamibfun.mp4';
 import posterImage from '../../assets/Images/kamibfunposter.jpg';
 import { Button } from '@nextui-org/button';
-import "./Kamib.css";
+import './kamib.css'; // Load specific component styles after
+
 
 const Kamibfun = () => {
   const navigate = useNavigate();
@@ -29,11 +30,11 @@ const Kamibfun = () => {
   };
 
   return (
-    <div className='main-container'>
+    <div className="kamib-container">
       <div
         className="min-h-screen flex flex-col justify-between"
         style={{
-          backgroundColor: 'rgba(0, 0, 0, 1)', // Black background with 85% opacity
+          backgroundColor: 'rgba(0, 0, 0, 1)',
         }}
       >
         {/* Back Button */}
@@ -75,25 +76,22 @@ const Kamibfun = () => {
               <h2 className="text-lg sm:text-xl font-semibold text-center mb-2">{concert.name}</h2>
               <div className="flex justify-center items-center mt-4 sm:mt-6">
                 {user ? ( // Check if user is logged in
-
                   <Button
                     onClick={() => navigate(`/reserve/147`)}
                     variant="contained"
                     color="warning"
                     style={{
-                      backgroundColor: loading ? '#8d8d8d' : ('#e19947'), // Light gray when disabled
-                      color: 'white', // Optional: change text color
-                      cursor: 'pointer', // Change cursor style
-                      padding: '12px 24px', // Adjust padding for size
-                      fontSize: '18px', // Increase font size
-                      borderRadius: '8px', // Optional: adjust border radius for aesthetics
-                      width: '200px', // Optional: set a fixed width
+                      backgroundColor: loading ? '#8d8d8d' : '#e19947',
+                      color: 'white',
+                      cursor: 'pointer',
+                      padding: '12px 24px',
+                      fontSize: '18px',
+                      borderRadius: '8px',
+                      width: '200px',
                     }}
                   >
                     {loading ? 'Loading...' : 'จองเลย'}
                   </Button>
-
-
                 ) : (
                   <LoginRequired /> // Render LoginRequired component if user is not logged in
                 )}
@@ -104,6 +102,7 @@ const Kamibfun = () => {
       </div>
     </div>
   );
+
 };
 
 export default Kamibfun;

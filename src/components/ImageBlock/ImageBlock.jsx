@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Tooltip, CircularProgress } from '@mui/material';
-import { Info } from 'lucide-react';
+// import { Info } from 'lucide-react'; // Remove this import if you are not using it
 import './ImageBlock.css'; // Import a CSS file for custom styles
 
 const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
@@ -45,7 +45,8 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
         <div className="tooltip-content">
           <h3 className="tooltip-title">{tooltipTitle}</h3>
           <p className="tooltip-description">{tooltipDescription}</p>
-          <Info className="tooltip-icon" />
+          {/* Remove the Info icon line below */}
+          {/* <Info className="tooltip-icon" /> */}
         </div>
       }
       arrow

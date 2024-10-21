@@ -1,9 +1,34 @@
-.character-grid {
+
+  /* CharacterGrid.css */
+  
+  .character-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* Default to 3 columns */
     grid-template-rows: auto auto;
     gap: 10px; /* General gap */
   }
+
+  /* Example in Kamib.css or a separate fonts.css file */
+@font-face {
+  font-family: 'CustomFont'; /* Name of your custom font */
+  src: url('../../../../fonts/iannnnn-OWL-Regular.otf') format('opentype'); /* Path to the font file */
+  font-weight: normal; /* Weight of the font */
+  font-style: normal; /* Style of the font */
+}
+
+/* Optionally, you can define additional font weights or styles */
+@font-face {
+  font-family: 'CustomFont';
+  src: url('../../../../fonts/iannnnn-OWL-Bold.otf') format('opentype'); /* Path to bold font file */
+  font-weight: bold; /* Bold weight */
+  font-style: normal; /* Style of the font */
+}
+
+
+.font-custom {
+  font-family: 'CustomFont', sans-serif; /* Ensure this matches your @font-face name */
+}
+
   
   .character-grid > div {
     margin: 0;

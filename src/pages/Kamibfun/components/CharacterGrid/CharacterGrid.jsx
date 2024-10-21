@@ -7,11 +7,10 @@ const CharacterGrid = () => {
   return (
     <div
       id="character-section"
-      className="character-grid mt-6 mx-auto justify-items-center p-4 border-1 border-black rounded-lg"
+      className={`character-grid mt-6 mx-auto justify-items-center p-4 border-1 border-black rounded-lg font-custom`} // Apply font-custom class
       style={{
         width: '85%',
         maxWidth: '1000px',
-        
       }}
     >
       {characterData.map((character) => (
