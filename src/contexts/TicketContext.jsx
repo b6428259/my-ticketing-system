@@ -15,7 +15,7 @@ export const TicketProvider = ({ children }) => {
     const [scanning, setScanning] = useState(false); // Loading state for scanning tickets
     const [error, setError] = useState(null);
 
-    const ip = 'http://34.142.203.93:8080/api/v1';
+    const ip = 'https://api.spotup.shop/api/v1';
 
     const fetchTicketDetail = async (id) => {
         setLoading(true); // Set loading state for ticket fetching

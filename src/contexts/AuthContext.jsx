@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const ip = 'http://34.142.203.93:8080';
+  const ip = 'https://api.spotup.shop';
   
   const navigate = useNavigate(); 
 
