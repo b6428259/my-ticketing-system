@@ -1,7 +1,6 @@
-// src/contexts/AuthContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; 
+import axios from 'axios'; // Ensure axios is imported
+import { useNavigate } from 'react-router-dom';
 
 export const AuthContext = createContext();
 
@@ -9,10 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const ip = 'http://34.142.203.93:8080';
-  
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,13 +16,12 @@ export const AuthProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          const response = await axios.get(`${ip}/api/v1/users/me`);
- 
+          const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/users/me`); // Updated for Vite
           setUser(response.data);
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
-        setError(error);
+        console.error('Error fetching user:', error.response || error.message);
+        setError(error.response?.data || 'An unknown error occurred');
         localStorage.removeItem('token');
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);
@@ -39,58 +34,27 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password) => {
+    console.log('Attempting to login with:', email, password);
     try {
-      const response = await axios.post(`${ip}/api/v1/users/login`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/login`, {
         email,
         password,
       });
-
+      console.log('Login successful:', response.data);
       localStorage.setItem('token', response.data.token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data);
       setError(null);
     } catch (error) {
-      setError(error);
-      throw error;
-    }
-  };
-
-  const register = async (fname, lname, email, password) => {
-    try {
-      const response = await axios.post(`${ip}/api/v1/users/register`, {
-        fname,
-        lname,
-        email,
-        password,
-        imageUrl: "",
-        tel: ""
-      });
-      setError(null);
-      await login(email, password);
-    } catch (error) {
-      setError(error);
-      throw error;
-    }
-  };
-
-  const checkEmail = async (email) => {
-    try {
-      const response = await axios.post(`${ip}/api/v1/users/check-email`, {
-        email,
-      });
-
-      return response.data;
-    } catch (error) {
-      console.error('Error checking email:', error);
+      console.error('Error during login:', error.response || error.message);
+      setError(error.response?.data || 'An unknown error occurred');
       throw error;
     }
   };
 
   const logout = async () => {
     try {
-      await axios.post(`${ip}/api/v1/users/logout`, null, {
-        
-
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/users/logout`, null, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -109,7 +73,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, loading, error, login, register, logout, checkEmail }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, loading, error, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

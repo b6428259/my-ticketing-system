@@ -11,7 +11,6 @@ const CharacterGrid = () => {
       style={{
         width: '85%',
         maxWidth: '1000px',
-        
       }}
     >
       {characterData.map((character) => (

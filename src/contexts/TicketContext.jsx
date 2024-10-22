@@ -15,7 +15,7 @@ export const TicketProvider = ({ children }) => {
     const [scanning, setScanning] = useState(false); // Loading state for scanning tickets
     const [error, setError] = useState(null);
 
-    const ip = 'http://34.142.203.93:8080/api/v1';
+    const ip = 'https://api.spotup.shop/api/v1';
 
     const fetchTicketDetail = async (id) => {
         setLoading(true); // Set loading state for ticket fetching
@@ -81,7 +81,7 @@ export const TicketProvider = ({ children }) => {
         }
     };
 
-    const purchaseTicket = async (userId, productId) => {
+    const purchaseTickets = async (cart) => {
         setLoading(true); // Set loading state for ticket purchasing
         try {
             const token = localStorage.getItem('token');
@@ -90,16 +90,19 @@ export const TicketProvider = ({ children }) => {
             }
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-            const response = await axios.post(`${ip}/tickets/purchase`, {
-                userId,
-                productId
-            });
+            // Loop through cart items to purchase each one
+            for (const item of cart) {
+                const response = await axios.post(`${ip}/tickets/purchase`, {
+                    userId: item.userId,  // Assuming userId is in the cart items
+                    productId: item.productId,
+                    quantity: item.quantity  // Add quantity if applicable
+                });
+                setResponseMessage(prevMessage => `${prevMessage}\n${response.data.message}`);
+            }
 
-            setResponseMessage(response.data.message);
             setError(null);
-            // Optionally update ticket state or any other relevant state
         } catch (error) {
-            console.error('Error purchasing ticket:', error);
+            console.error('Error purchasing tickets:', error);
             if (error.response && error.response.status === 401) {
                 localStorage.removeItem('token');
                 setError('Session expired. Please log in again.');
@@ -110,7 +113,6 @@ export const TicketProvider = ({ children }) => {
             setLoading(false); // Reset loading state after purchase attempt
         }
     };
-    
 
     return (
         <TicketContext.Provider value={{
@@ -121,8 +123,7 @@ export const TicketProvider = ({ children }) => {
             fetchTicketDetail,
             handleScan,
             responseMessage,
-            purchaseTicket, // Expose purchaseTicket method
-
+            purchaseTickets,  // Expose purchaseTickets method
         }}>
             {loading && <div>Loading ticket details...</div>}
             {scanning && <div>Scanning ticket...</div>}

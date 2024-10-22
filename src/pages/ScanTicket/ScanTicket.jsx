@@ -8,18 +8,19 @@ const ScanTicket = () => {
     const { handleScan, responseMessage, error } = useTicket();
     const html5QrCodeRef = useRef(null);
     const [qrCodeScanner, setQrCodeScanner] = useState(null);
+
     useEffect(() => {
         // Initialize the QR code scanner
         if (cameraOpen) {
             const qrCodeScanner = new Html5Qrcode("qr-reader");
             setQrCodeScanner(qrCodeScanner);
-    
+
             console.log("Starting QR code scanner...");
             qrCodeScanner.start(
-                { facingMode: "environment" },
+                { facingMode: "environment" }, // Use back camera
                 {
-                    fps: 15, // Increase the frame rate
-                    qrbox: { width: 300, height: 300 }, // Increase the QR box size
+                    fps: 30, // Set frame rate for the scanner
+                    qrbox: { width: 300, height: 300 }, // Size of the scanning box
                 },
                 handleScanResult,
                 handleError
@@ -29,19 +30,21 @@ const ScanTicket = () => {
                 console.error("Failed to start QR code scanner:", err);
             });
         }
-    
+
         // Cleanup function to stop the scanner
         return () => {
             if (qrCodeScanner) {
-                qrCodeScanner.stop().catch(err => {
+                qrCodeScanner.stop().then(() => {
+                    console.log("QR code scanner stopped successfully");
+                }).catch(err => {
                     console.error("Failed to stop scanning:", err);
                 });
             }
         };
     }, [cameraOpen]);
-    
 
     const handleScanResult = (decodedText, decodedResult) => {
+        console.log("QR code scanned: ", decodedText);
         handleScan(decodedText); // Use decodedText to extract the QR code value
         setCameraOpen(false); // Close the camera after scanning
     };
@@ -59,7 +62,7 @@ const ScanTicket = () => {
             </button>
 
             {cameraOpen && (
-                <div id="qr-reader" style={{ width: '100%', height: '100%' }}></div>
+                <div id="qr-reader" style={{ width: '100%', height: '400px', position: 'relative' }}></div>
             )}
 
             {responseMessage && <p style={{ color: 'green' }}>{responseMessage}</p>}

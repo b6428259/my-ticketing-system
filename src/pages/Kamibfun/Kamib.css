@@ -1,38 +1,24 @@
-/* Regular font-weight */
+/* Kamib.css */
+
 @font-face {
     font-family: 'CustomFont';
-    src: url('../../fonts/iannnnn-OWL-Regular.otf') format('opentype');
+    src: url('../../fonts/iannnnn-OWL-Regular.otf') format('opentype'); /* Adjust the path as needed */
     font-weight: normal;
     font-style: normal;
 }
 
-/* Bold font-weight */
-@font-face {
-    font-family: 'CustomFont';
-    src: url('../../fonts/iannnnn-OWL-Bold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
+/* Apply the custom font specifically to elements you want */
+.kamib-custom-font {
+    font-family: 'CustomFont', sans-serif !important;
 }
 
-/* Thin/Light font-weight */
-@font-face {
-    font-family: 'CustomFont';
-    src: url('../../fonts/iannnnn-OWL-Thin.otf') format('opentype');
-    font-weight: 300; /* Light/Thin weight */
-    font-style: normal;
-}
 
-/* Usage in CSS */
-.main-container {
-    font-family: "CustomFont", sans-serif;
+/* You can also create specific styles for headers, paragraphs, etc. */
+.kamib-header {
+    font-family: 'CustomFont', sans-serif;
+    font-size: 24px; /* Example size */
+    font-weight: bold; /* Example weight */
 }
-
-.bold-text {
-    font-family: "CustomFont", sans-serif;
-    font-weight: bold; /* Matches the @font-face bold weight */
-}
-
-.thin-text {
-    font-family: "CustomFont", sans-serif;
-    font-weight: 300; /* Matches the @font-face thin weight */
+.kamib-container {
+    font-family: 'CustomFont', sans-serif !important; /* This will apply only to elements inside .kamib-container */
 }

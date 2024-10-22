@@ -27,7 +27,7 @@ const TicketDetail = () => {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch(`http://34.142.203.93:8080/api/v1/tickets/${ticketId}/detail`, {
+                const response = await fetch(`https://api.spotup.shop/api/v1/tickets/${ticketId}/detail`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

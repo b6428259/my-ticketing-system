@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import kamibfunImage from '../../assets/Images/kamibfunfeature.jpg'; // Import the image
 import ConcertCard from './components/ConcertCard'; // Assuming you have this component
+import { getConcerts } from '../../services/concert/show-api';
 
 export default function Home() {
     const [concerts, setConcerts] = useState([]);
@@ -14,7 +15,8 @@ export default function Home() {
         const fetchConcerts = async () => {
             setIsLoading(true);
             try {
-                const response = await axios.get('https://api.spotup.shop/api/v1/concert', {
+                const response = await getConcerts({
+
                     withCredentials: true, // Send the cookie
                 });
                 setConcerts(response.data.data);

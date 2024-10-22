@@ -1,81 +1,70 @@
-/* Slide-Up Animation */
-@keyframes slideUp {
-  0% {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+.image-block-container {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.image-block-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.image-zoom-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-zoom {
+  transition: transform 0.3s ease;
+}
+
+.image-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
 .image-slide-up-container {
-  animation: slideUp 1s ease-out forwards;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  animation: slideUp 0.6s ease-out forwards;
 }
 
-/* Zoom on Hover */
-.image-zoom {
-  transition: transform 0.3s ease-in-out; /* Smooth transition for zoom effect */
-}
-
-.image-zoom:hover {
-  transform: scale(1.1); /* Zoom in slightly on hover */
-}
-
-/* Custom Tooltip */
-.custom-tooltip {
-  transform: scale(0.9);
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.custom-tooltip-visible {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.tooltip-content {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-}
-
-.tooltip-title {
-  font-weight: bold;
-  margin: 0;
-  font-size: 16px;
-}
-
-.tooltip-description {
-  margin: 5px 0 0 0;
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.tooltip-icon {
-  margin-left: 8px;
-  color: white;
-}
-
-/* Media Queries for responsiveness */
-@media (max-width: 768px) {
-  .image-block-container {
-    padding: 8px;
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-
-  .image-zoom {
-    max-width: 180px; /* Smaller images on smaller devices */
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 480px) {
-  .image-block-container {
-    padding: 4px;
-  }
+/* Modal Custom Styles */
+.modal-custom {
+  --modal-background: white;
+  --modal-border-radius: 16px;
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
 
-  .image-zoom {
-    max-width: 150px; /* Even smaller images for mobile devices */
+.modal-custom [data-overlay] {
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Animation for content entrance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content-animate {
+  animation: fadeInUp 0.3s ease-out forwards;
 }

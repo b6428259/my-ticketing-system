@@ -7,9 +7,8 @@ import Navbar from "./components/Navbar/Navbar";
 import Register from "./pages/Authentication/Register/Register";
 import { NextUIProvider } from '@nextui-org/react';
 import { StrictMode } from 'react';
-
-// Import your CombinedProvider
-import CombinedProvider from './contexts/CombinedProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ProviderWrapper from './provider/ProviderWrapper';
 
 // Lazy load other components
 const Home = lazy(() => import("./pages/Home/Home"));
@@ -24,8 +23,6 @@ const TicketDetail = lazy(() => import("./pages/MyTicket/components/TicketDetail
 const ScanTicket = lazy(() => import("./pages/ScanTicket/ScanTicket"));
 const Show = lazy(() => import("./pages/Show/Show")); // Lazy load the Show component
 const Reserve = lazy(() => import("./pages/Reserve/Reserve")); // Lazy load the Reserve component
-
-
 
 function App() {
     const [loading, setLoading] = useState(true); // Loading state
@@ -46,53 +43,47 @@ function App() {
     return (
         <>
             {loading ? (
-                // Show the loading component while loading is true
                 <Loading />
             ) : (
-                <>
-                    <div className="app-container">
-                        {isNavbarVisible && <Navbar />} {/* Render Navbar only if visible */}
-                        <Suspense fallback={<Loading />}>
-                            <Routes>
-                                <Route path="/" element={<Home />} /> {/* Set Home as the default page */}
-                                <Route path="/home" element={<Home />} />
-                                <Route path="/reserve/:concertId" element={<Reserve />} /> {/* Update Reserve route */}
-                    
-                                <Route path="/payment" element={<Payment />} />
-                                <Route path="/kamibfun" element={<Kamibfun />} />
-                                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                                <Route path="/terms-of-service" element={<TermsOfService />} />
-                                <Route path="/contact-us" element={<ContactUs />} />
-                                <Route path="/register" element={<Register />} />
-                                <Route path="/user-settings" element={<UserSettings />} />
-                                <Route path="/my-tickets" element={<MyTickets />} />
-                                <Route path="/my-tickets/detail/:ticketId" element={<TicketDetail />} />
-                                <Route path="/scan-ticket" element={<ScanTicket />} />
-                                <Route path="/show/:concertId" element={<Show />} /> {/* Add Show route */}
-                                
-                            </Routes>
-                        </Suspense>
-                        <Footer /> {/* Footer will appear globally */}
-                    </div>
-                </>
+                <div className="app-container">
+                    {isNavbarVisible && <Navbar />}
+                    <Suspense fallback={<Loading />}>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/home" element={<Home />} />
+                            <Route path="/reserve/:concertId" element={<Reserve />} />
+                            <Route path="/payment" element={<Payment />} />
+                            <Route path="/kamibfun" element={<Kamibfun />} />
+                            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                            <Route path="/terms-of-service" element={<TermsOfService />} />
+                            <Route path="/contact-us" element={<ContactUs />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/user-settings" element={<UserSettings />} />
+                            <Route path="/my-tickets" element={<MyTickets />} />
+                            <Route path="/my-tickets/detail/:ticketId" element={<TicketDetail />} />
+                            <Route path="/scan-ticket" element={<ScanTicket />} />
+                            <Route path="/show/:concertId" element={<Show />} />
+                        </Routes>
+                    </Suspense>
+                    <Footer />
+                </div>
             )}
         </>
     );
 }
 
-// Wrap App with Router and Combined Provider
 export default function AppWithRouter() {
     return (
         <StrictMode>
-            <Router> {/* Move Router here to wrap the entire application */}
-                <NextUIProvider>
-                    <CombinedProvider> {/* Use the combined provider here */}
-                        <main className="dark text-foreground bg-background">
+            <NextUIProvider>
+                <QueryClientProvider client={new QueryClient()}>
+                    <Router>
+                        <ProviderWrapper>
                             <App />
-                        </main>
-                    </CombinedProvider>
-                </NextUIProvider>
-            </Router>
+                        </ProviderWrapper>
+                    </Router>
+                </QueryClientProvider>
+            </NextUIProvider>
         </StrictMode>
     );
 }
