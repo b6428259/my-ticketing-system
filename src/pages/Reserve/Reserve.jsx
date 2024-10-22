@@ -2,10 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
-import { Button, Input, Select, SelectItem, Card, CardHeader, CardBody, Image } from '@nextui-org/react';
+import {
+    Button,
+    Input,
+    Select,
+    SelectItem,
+    Card,
+    CardHeader,
+    CardBody,
+    Image,
+} from '@nextui-org/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { buyTickets, getConcertRounds, getProductsByConcert } from '../../services/reserve/reserve-api'; // Import your API functions
 import "./Reserve.css";
+
+
 
 const Reserve = () => {
     const { concertId } = useParams();
@@ -13,21 +25,26 @@ const Reserve = () => {
     const { user } = useContext(AuthContext);
     const [rounds, setRounds] = useState([]);
     const [products, setProducts] = useState([]);
-    const [selectedRound, setSelectedRound] = useState(new Set([]));
+    const [selectedRound, setSelectedRound] = useState(new Set());
     const [cart, setCart] = useState([]);
     const [quantities, setQuantities] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        const fetchRoundsAndProducts = async () => {
+        const fetchRounds = async () => {
             try {
-                const roundResponse = await axios.get(`https://api.spotup.shop/api/v1/concert-rounds/by-concert/${concertId}`);
+                const roundResponse = await getConcertRounds(concertId); // Use the imported function
                 setRounds(roundResponse.data.data);
             } catch (error) {
-                console.error('Error fetching concert rounds:', error);
+                setError('Error fetching concert rounds.');
+                console.error(error);
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchRoundsAndProducts();
+        fetchRounds();
     }, [concertId]);
 
     useEffect(() => {
@@ -36,17 +53,37 @@ const Reserve = () => {
                 try {
                     const roundId = Array.from(selectedRound)[0];
                     const round = rounds.find(r => r.id.toString() === roundId);
-                    const productResponse = await axios.get(`http://localhost:8080/api/v1/products/concert/${concertId}`);
+                    const productResponse = await getProductsByConcert(concertId); // Use the imported function
                     setProducts(productResponse.data.data.filter(product => product.roundNumber === round.roundNumber));
                 } catch (error) {
-                    console.error('Error fetching products:', error);
+                    setError('Error fetching products.');
+                    console.error(error);
                 }
             }
         };
 
         fetchProducts();
     }, [selectedRound, concertId, rounds]);
+   
+   
+    const handleBuy = async () => {
+        const purchases = cart.map(product => ({
+            userId: user.id,
+            productId: product.productId,
+            quantity: product.quantity,
+        }));
 
+        try {
+            for (const purchase of purchases) {
+                await buyTickets(purchase); // Use the imported function
+            }
+            alert('Purchase successful!');
+            navigate(`/my-tickets`);
+        } catch (error) {
+            setError('Error purchasing tickets. Please try again.');
+            console.error(error);
+        }
+    };
     const handleAddToCart = (product) => {
         const quantity = quantities[product.productId] || 1;
 
@@ -77,6 +114,7 @@ const Reserve = () => {
         setCart((prevCart) => prevCart.filter(item => item.productId !== productId));
     };
 
+ 
     const increaseQuantity = (productId) => {
         setCart((prevCart) => {
             return prevCart.map(item => {
@@ -99,27 +137,8 @@ const Reserve = () => {
         });
     };
 
-    const handleBuy = async () => {
-        const purchases = cart.map(product => ({
-            userId: user.id,
-            productId: product.productId,
-            quantity: product.quantity,
-        }));
 
-        try {
-            for (const purchase of purchases) {
-                await axios.post('http://localhost:8080/api/v1/tickets/buy', purchase);
-            }
 
-            alert('Purchase successful!');
-            navigate(`/my-tickets`);
-        } catch (error) {
-            console.error('Error purchasing tickets:', error);
-            alert('Error purchasing tickets. Please try again.');
-        }
-    };
-
-    // Function to calculate the total price
     const calculateTotal = () => {
         return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     };
@@ -136,6 +155,9 @@ const Reserve = () => {
     };
 
     const groupedProducts = groupProductsByType(products);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-900 text-white p-8">
@@ -180,7 +202,7 @@ const Reserve = () => {
                                                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                                                     <h4 className="font-bold text-xl">{product.name}</h4>
                                                     <small className="text-gray-400">Price: ${product.price.toFixed(2)}</small>
-                                                    <small className="text-gray-400">Amout :{product.amount}</small>
+                                                    <small className="text-gray-400">Amount: {product.amount}</small>
                                                 </CardHeader>
                                                 <CardBody className="overflow-visible py-2 text-center">
                                                     {product.productImgUrl && (
@@ -198,7 +220,7 @@ const Reserve = () => {
                                                         min="1"
                                                         value={quantities[product.productId] || 1}
                                                         onChange={(e) => handleQuantityChange(product.productId, parseInt(e.target.value))}
-                                                        className=" text-white w-full mt-2"
+                                                        className="text-white w-full mt-2"
                                                     />
                                                     <Button
                                                         color="primary"
@@ -250,14 +272,13 @@ const Reserve = () => {
                                             size="xs"
                                             aria-label="Remove Item"
                                         >
-                                            <FontAwesomeIcon icon={faTrash} style={{color: "#ff0000"}}/>
+                                            <FontAwesomeIcon icon={faTrash} style={{ color: "#ff0000" }} />
                                         </Button>
                                     </div>
                                 </li>
                             ))}
                         </ul>
 
-                        {/* Display total amount here */}
                         <h4 className="text-xl font-bold mt-4">Total: ${calculateTotal()}</h4>
                     </div>
                 )}

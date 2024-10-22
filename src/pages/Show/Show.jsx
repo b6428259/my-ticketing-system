@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import TicketTypeRow from './components/TicketTypeRow/TicketTypeRow';
 import LoginRequired from '../../components/Modals/LoginRequiredModal';
 import { Button } from '@nextui-org/react';
+import { getConcertDetails } from '../../services/concert/show-api';  // Import the API call
 
 const Show = () => {
     const { concertId } = useParams();
@@ -13,12 +13,11 @@ const Show = () => {
     const [concert, setConcert] = useState(null);
     const [loading, setLoading] = useState(false);
 
-
     // Fetch concert details using the concertId
     useEffect(() => {
         const fetchConcert = async () => {
             try {
-                const response = await axios.get(`https://api.spotup.shop/api/v1/concert/${concertId}`);
+                const response = await getConcertDetails(concertId);  // Use the API call from ShowApi.jsx
                 setConcert(response.data.data);
             } catch (error) {
                 console.error('Error fetching concert details:', error);
@@ -27,8 +26,6 @@ const Show = () => {
 
         fetchConcert();
     }, [concertId]);
-
-
 
     if (!concert) {
         return <div>Loading concert details...</div>;
@@ -53,7 +50,6 @@ const Show = () => {
                 <div id="product-section" className="mt-12">
                     <h1 className="text-xl sm:text-2xl font-bold my-4 text-center">Book Ticket Now!</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
                         {/* Ticket Section */}
                         <div id="ticket-section" className="mb-6 align-middle">
                             <h1 className="text-xl sm:text-2xl font-bold my-4 sm:mb-6 mb-20 text-center">Select Ticket Type</h1>
@@ -63,27 +59,24 @@ const Show = () => {
                                 </div>
                                 <h2 className="text-lg sm:text-xl font-semibold text-center mb-2">{concert.name}</h2>
                                 <div className="flex justify-between items-center mt-4 sm:mt-6">
-                                    {user ? ( // Check if user is logged in
-
+                                    {user ? (
                                         <Button
                                             onClick={() => navigate(`/reserve/${concertId}`)}
                                             variant="contained"
                                             style={{
-                                                backgroundColor: loading ? '#8d8d8d' : ('green'), // Light gray when disabled
-                                                color: 'white', // Optional: change text color
-                                                cursor: 'pointer', // Change cursor style
-                                                padding: '12px 24px', // Adjust padding for size
-                                                fontSize: '18px', // Increase font size
-                                                borderRadius: '8px', // Optional: adjust border radius for aesthetics
-                                                width: '200px', // Optional: set a fixed width
+                                                backgroundColor: loading ? '#8d8d8d' : 'green',
+                                                color: 'white',
+                                                cursor: 'pointer',
+                                                padding: '12px 24px',
+                                                fontSize: '18px',
+                                                borderRadius: '8px',
+                                                width: '200px',
                                             }}
                                         >
                                             {loading ? 'Loading...' : 'Book Now'}
                                         </Button>
-
-
                                     ) : (
-                                        <LoginRequired /> // Render LoginRequired component if user is not logged in
+                                        <LoginRequired />
                                     )}
                                 </div>
                             </div>
