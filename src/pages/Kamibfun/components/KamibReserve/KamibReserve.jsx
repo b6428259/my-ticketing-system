@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../../contexts/AuthContext';
+import { useLanguage } from '../../../../contexts/LanguageContext';
 import {
     Button,
     Input,
@@ -11,13 +11,16 @@ import {
     CardHeader,
     CardBody,
     Image,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
 } from '@nextui-org/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { buyTickets, getConcertRounds, getProductsByConcert } from '../../../../services/reserve/reserve-api'; // Import your API functions
+import { faPlus, faMinus, faTrash, faClock, faLanguage } from '@fortawesome/free-solid-svg-icons';
+
 import "./KamibReserve.css";
-
-
 
 const Reserve = () => {
     const { concertId } = useParams();
@@ -25,17 +28,83 @@ const Reserve = () => {
     const { user } = useContext(AuthContext);
     const [rounds, setRounds] = useState([]);
     const [products, setProducts] = useState([]);
-    const [selectedRound, setSelectedRound] = useState(new Set());
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedRoundId, setSelectedRoundId] = useState(null);
+    const [availableDates, setAvailableDates] = useState([]);
+    const [filteredRounds, setFilteredRounds] = useState([]);
     const [cart, setCart] = useState([]);
     const [quantities, setQuantities] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const { language, toggleLanguage, t } = useLanguage();
+    const [showLanguageModal, setShowLanguageModal] = useState(true);
+
+    // Language Selection Modal
+    const handleLanguageSelect = (selectedLanguage) => {
+        if (language !== selectedLanguage) {
+            toggleLanguage();
+        }
+        setShowLanguageModal(false);
+    };
+
+    const LanguageModal = () => (
+        <Modal 
+            isOpen={showLanguageModal} 
+            onClose={() => setShowLanguageModal(false)}
+            hideCloseButton
+            isDismissable={false}
+        >
+            <ModalContent>
+                <ModalHeader className="flex flex-col gap-1">
+                    <div className="text-2xl font-bold">Select Language / เลือกภาษา</div>
+                </ModalHeader>
+                <ModalBody>
+                    <div className="flex flex-col gap-4">
+                        <Button
+                            size="lg"
+                            onClick={() => handleLanguageSelect('en')}
+                            className={`p-6 ${language === 'en' ? 'bg-blue-600' : 'bg-gray-600'}`}
+                        >
+                            <span className="text-xl">English</span>
+                        </Button>
+                        <Button
+                            size="lg"
+                            onClick={() => handleLanguageSelect('th')}
+                            className={`p-6 ${language === 'th' ? 'bg-blue-600' : 'bg-gray-600'}`}
+                        >
+                            <span className="text-xl">ภาษาไทย</span>
+                        </Button>
+                    </div>
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    );
+
+    // Rest of the existing code...
+    const formatDateTime = (dateString, showDate = true, showTime = true) => {
+        const options = {
+            timeZone: 'Asia/Bangkok',
+            ...(showDate && { dateStyle: 'full' }),
+            ...(showTime && { timeStyle: 'short' })
+        };
+        return new Date(dateString).toLocaleString(language === 'th' ? 'th-TH' : 'en-US', options);
+    };
+
 
     useEffect(() => {
         const fetchRounds = async () => {
             try {
-                const roundResponse = await getConcertRounds(147); // Use the imported function
-                setRounds(roundResponse.data.data);
+                const response = await fetch(`https://api.spotup.shop/api/v1/concert-rounds/by-concert/147`);
+                const roundResponse = await response.json();
+                setRounds(roundResponse.data);
+
+                const dates = [...new Set(roundResponse.data.map(round =>
+                    new Date(round.startTime).toLocaleString('th-TH', {
+                        timeZone: 'Asia/Bangkok',
+                        dateStyle: 'full'
+                    })
+                ))].sort();
+                setAvailableDates(dates);
             } catch (error) {
                 setError('Error fetching concert rounds.');
                 console.error(error);
@@ -48,13 +117,27 @@ const Reserve = () => {
     }, [concertId]);
 
     useEffect(() => {
+        if (selectedDate) {
+            const roundsForDate = rounds.filter(round =>
+                new Date(round.startTime).toLocaleString('th-TH', {
+                    timeZone: 'Asia/Bangkok',
+                    dateStyle: 'full'
+                }) === selectedDate
+            );
+            setFilteredRounds(roundsForDate);
+            setSelectedRoundId(null);
+        }
+    }, [selectedDate, rounds]);
+
+    useEffect(() => {
         const fetchProducts = async () => {
-            if (selectedRound.size > 0) {
+            if (selectedRoundId) {
                 try {
-                    const roundId = Array.from(selectedRound)[0];
-                    const round = rounds.find(r => r.id.toString() === roundId);
-                    const productResponse = await getProductsByConcert(concertId); // Use the imported function
-                    setProducts(productResponse.data.data.filter(product => product.roundNumber === round.roundNumber));
+                    const response = await fetch(`https://api.spotup.shop/api/v1/products/concert/147`);
+                    const productResponse = await response.json();
+                    setProducts(productResponse.data.filter(product =>
+                        product.roundNumber.toString() === selectedRoundId.toString()
+                    ));
                 } catch (error) {
                     setError('Error fetching products.');
                     console.error(error);
@@ -63,9 +146,11 @@ const Reserve = () => {
         };
 
         fetchProducts();
-    }, [selectedRound, concertId, rounds]);
-   
-   
+    }, [selectedRoundId, concertId]);
+
+    const handleRoundSelect = (roundId) => {
+        setSelectedRoundId(roundId);
+    };
     const handleBuy = async () => {
         const purchases = cart.map(product => ({
             userId: user.id,
@@ -75,7 +160,15 @@ const Reserve = () => {
 
         try {
             for (const purchase of purchases) {
-                await buyTickets(purchase); // Use the imported function
+                const response = await fetch(`https://api.spotup.shop/api/v1/tickets/buy`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(purchase),
+                });
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message);
             }
             alert('Purchase successful!');
             navigate(`/my-tickets`);
@@ -84,9 +177,9 @@ const Reserve = () => {
             console.error(error);
         }
     };
+
     const handleAddToCart = (product) => {
         const quantity = quantities[product.productId] || 1;
-
         setCart((prevCart) => {
             const existingProduct = prevCart.find(p => p.productId === product.productId);
             if (existingProduct) {
@@ -114,30 +207,17 @@ const Reserve = () => {
         setCart((prevCart) => prevCart.filter(item => item.productId !== productId));
     };
 
- 
     const increaseQuantity = (productId) => {
-        setCart((prevCart) => {
-            return prevCart.map(item => {
-                if (item.productId === productId) {
-                    return { ...item, quantity: item.quantity + 1 };
-                }
-                return item;
-            });
-        });
+        setCart((prevCart) => prevCart.map(item =>
+            item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item
+        ));
     };
 
     const decreaseQuantity = (productId) => {
-        setCart((prevCart) => {
-            return prevCart.map(item => {
-                if (item.productId === productId && item.quantity > 1) {
-                    return { ...item, quantity: item.quantity - 1 };
-                }
-                return item;
-            });
-        });
+        setCart((prevCart) => prevCart.map(item =>
+            item.productId === productId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+        ));
     };
-
-
 
     const calculateTotal = () => {
         return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
@@ -160,39 +240,86 @@ const Reserve = () => {
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="flex flex-col min-h-screen bg-gray-900 text-white p-8">
+        <div className="reserve-container flex flex-col min-h-screen bg-gray-900 text-white p-8">
+            <LanguageModal />
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-center mb-4">Reserve Tickets for Concert {concertId}</h1>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-4xl font-bold text-center">
+                        {t('reserveTitle')} {concertId}
+                    </h1>
+                    <Button
+                        onClick={toggleLanguage}
+                        className="bg-transparent"
+                        size="sm"
+                    >
+                        <FontAwesomeIcon icon={faLanguage} className="mr-2" />
+                        {language.toUpperCase()}
+                    </Button>
+                </div>
 
                 <div className="mb-6">
                     <Select
-                        label="Select Round"
-                        placeholder="Choose a concert round"
-                        selectedKeys={selectedRound}
-                        className="max-w-xs"
-                        onSelectionChange={setSelectedRound}
+                        label={t('selectDate')}
+                        placeholder={t('selectDatePlaceholder')}
+                        className="max-w-xs mb-4"
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        value={selectedDate}
                     >
-                        {rounds.map((round) => (
-                            <SelectItem
-                                key={round.id.toString()}
-                                value={round.id}
-                                textValue={`Round ${round.roundNumber} - ${new Date(round.roundDate).toLocaleString()}`}
-                            >
-                                Round {round.roundNumber} - {new Date(round.roundDate).toLocaleString()}
+                        {availableDates.map((date) => (
+                            <SelectItem key={date} value={date}>
+                                {date}
                             </SelectItem>
                         ))}
                     </Select>
+
+                    {selectedDate && (
+                        <div className="space-y-4">
+                            <h3 className="text-xl font-semibold mb-2">{t('selectRound')}</h3>
+                            <div className="grid gap-3">
+                                {filteredRounds.map((round) => (
+                                    <button
+                                        key={round.id}
+                                        onClick={() => handleRoundSelect(round.id)}
+                                        className={`w-full text-left p-4 rounded-lg transition-all ${selectedRoundId === round.id
+                                                ? 'bg-blue-600 border-2 border-blue-400'
+                                                : 'bg-gray-800 hover:bg-gray-700'
+                                            }`}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <div className="text-lg font-semibold mb-1">
+                                                    {t('round')} {round.roundNumber}
+                                                </div>
+                                                <div className="text-sm text-gray-300 flex items-center">
+                                                    <FontAwesomeIcon icon={faClock} className="mr-2" />
+                                                    {formatDateTime(round.startTime)} - {formatDateTime(round.endTime, false, true)}
+                                                </div>
+                                            </div>
+                                            {selectedRoundId === round.id && (
+                                                <div className="text-blue-200 text-sm font-semibold">
+                                                    {t('selectedRound')}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
 
-                {selectedRound.size > 0 && (
+
+                {selectedRoundId && (
                     <div className="mb-6">
-                        <h3 className="text-2xl font-semibold mb-2">Select Product</h3>
+                        <h3 className="text-2xl font-semibold mb-2">{t('selectProduct')}</h3>
                         {Object.keys(groupedProducts).length === 0 ? (
-                            <p>No products available for this round.</p>
+                            <p>{t('noProducts')}</p>
                         ) : (
                             Object.entries(groupedProducts).map(([type, products]) => (
                                 <div key={type} className="mb-6">
-                                    <h4 className="text-lg font-bold mb-2 text-blue-300">Category: {type}</h4>
+                                    <h4 className="text-lg font-bold mb-2 text-blue-300">
+                                        {t('ticketType')}: {type}
+                                    </h4>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {products.map(product => (
                                             <Card
@@ -201,8 +328,12 @@ const Reserve = () => {
                                             >
                                                 <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
                                                     <h4 className="font-bold text-xl">{product.name}</h4>
-                                                    <small className="text-gray-400">Price: ${product.price.toFixed(2)}</small>
-                                                    <small className="text-gray-400">Amount: {product.amount}</small>
+                                                    <small className="text-gray-400">
+                                                        {t('price')}: ฿{product.price.toFixed(2)}
+                                                    </small>
+                                                    <small className="text-gray-400">
+                                                        {t('quantity')}: {product.amount}
+                                                    </small>
                                                 </CardHeader>
                                                 <CardBody className="overflow-visible py-2 text-center">
                                                     {product.productImgUrl && (
@@ -227,7 +358,7 @@ const Reserve = () => {
                                                         onClick={() => handleAddToCart(product)}
                                                         className="mt-2"
                                                     >
-                                                        Add to Cart
+                                                        {t('addToCart')}
                                                     </Button>
                                                 </CardBody>
                                             </Card>
@@ -241,13 +372,11 @@ const Reserve = () => {
 
                 {cart.length > 0 && (
                     <div className="mb-6">
-                        <h3 className="text-2xl font-semibold mb-2">Your Cart</h3>
+                        <h3 className="text-2xl font-semibold mb-2">{t('yourCart')}</h3>
                         <ul className="list-disc pl-5">
                             {cart.map((item, index) => (
-                                <li key={index} className="flex items-center justify-between">
-                                    <span>
-                                        {item.name} - Quantity: {item.quantity}
-                                    </span>
+                                <li key={index} className="flex items-center justify-between mb-2">
+                                    <span>{item.name}</span>
                                     <div className="flex items-center">
                                         <Button
                                             onClick={() => decreaseQuantity(item.productId)}
@@ -278,14 +407,15 @@ const Reserve = () => {
                                 </li>
                             ))}
                         </ul>
-
-                        <h4 className="text-xl font-bold mt-4">Total: ${calculateTotal()}</h4>
+                        <h4 className="text-xl font-bold mt-4">
+                            {t('total')}: ${calculateTotal()}
+                        </h4>
                     </div>
                 )}
 
                 {cart.length > 0 && (
                     <Button color="success" onClick={handleBuy} className="w-full">
-                        Buy Now
+                        {t('buyNow')}
                     </Button>
                 )}
             </div>

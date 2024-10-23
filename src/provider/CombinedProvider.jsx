@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthProvider } from '../contexts/AuthContext';
 import { TicketProvider } from '../contexts/TicketContext';
 import { ConcertProvider } from '../contexts/ConcertContext';
+import { LanguageProvider } from '../contexts/LanguageContext';
 import { useParams } from 'react-router-dom';
 
 const CombinedProvider = ({ children }) => {
@@ -10,11 +11,14 @@ const CombinedProvider = ({ children }) => {
     return (
         <AuthProvider>
             <TicketProvider>
-                <ConcertProvider concertId={concertId}> {/* Pass concertId here */}
-                    {children}
+                <ConcertProvider concertId={concertId}>
+                    <LanguageProvider>
+                        {children}
+                    </LanguageProvider>
                 </ConcertProvider>
             </TicketProvider>
         </AuthProvider>
+
     );
 };
 
