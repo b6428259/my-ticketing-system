@@ -37,7 +37,7 @@ export default function Home() {
     }, [navigate]);
 
     const handleFeaturedConcertClick = () => {
-        navigate('/kamibfun'); // Redirect to the concert details page
+        navigate('/show/147'); // Redirect to the concert details page
     };
 
     const FeaturedConcertCard = () => {

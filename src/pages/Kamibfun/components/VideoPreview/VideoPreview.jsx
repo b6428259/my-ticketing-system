@@ -81,7 +81,7 @@ const VideoPreview = ({ videoSrc, poster }) => {
 
       {/* Scroll Text and Arrow */}
       <div className="scroll-indicator">
-        <p className="scroll-text">Scroll for more</p>
+        <p className="scroll-text">เลื่อนเพื่อดูรายละเอียด</p>
         <div className="arrow-down">
           &#9660; {/* Down arrow character */}
         </div>

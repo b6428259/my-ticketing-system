@@ -117,17 +117,9 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
             <>
               <ModalHeader className="flex flex-row justify-between items-center border-b pb-4">
                 <div className="flex flex-col">
-                  <h2 className="text-xl font-bold text-gray-800">{tooltipTitle}</h2>
+                  <h2 className="text-xl font-bold text-white">{tooltipTitle}</h2>
                   <p className="text-sm text-gray-500 mt-1">Character Profile</p>
                 </div>
-                <Button
-                  isIconOnly
-                  variant="light"
-                  className="text-gray-500 hover:text-gray-700"
-                  onPress={onClose}
-                >
-                  <X size={20} />
-                </Button>
               </ModalHeader>
               <ModalBody className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -145,9 +137,9 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
                   </div>
                   <div className="flex flex-col justify-between">
                     <div className="space-y-4">
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">รายละเอียดตัวละคร</h3>
-                        <p className="text-gray-600 leading-relaxed">
+                      <div className="p-2 bg-gray rounded-lg">
+                        <h3 className="text-lg font-bold text-white mb-2">รายละเอียดตัวละคร</h3>
+                        <p className="text-gray-300 leading-relaxed">
                           {tooltipDescription}
                         </p>
                       </div>
@@ -166,18 +158,11 @@ const ImageBlock = ({ src, alt, tooltipTitle, tooltipDescription, style }) => {
               <ModalFooter className="border-t pt-4">
                 <Button 
                   color="danger" 
-                  variant="light" 
+                  variant="flat" 
                   onPress={onClose}
-                  className="hover:bg-red-50"
+                  className="hover:bg-red-600"
                 >
                   ปิด
-                </Button>
-                <Button 
-                  color="primary"
-                  className="bg-purple-600 text-white hover:bg-purple-700"
-                  onPress={onClose}
-                >
-                  เข้าใจแล้ว
                 </Button>
               </ModalFooter>
             </>

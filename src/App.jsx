@@ -23,6 +23,7 @@ const TicketDetail = lazy(() => import("./pages/MyTicket/components/TicketDetail
 const ScanTicket = lazy(() => import("./pages/ScanTicket/ScanTicket"));
 const Show = lazy(() => import("./pages/Show/Show")); // Lazy load the Show component
 const Reserve = lazy(() => import("./pages/Reserve/Reserve")); // Lazy load the Reserve component
+const KamibReserve = lazy(() => import("./pages/Kamibfun/components/KamibReserve/KamibReserve")); // Lazy load the KamibReserve component
 
 function App() {
     const [loading, setLoading] = useState(true); // Loading state
@@ -37,7 +38,7 @@ function App() {
     }, []);
 
     // Define paths where the navbar should be hidden
-    const hiddenNavbarPaths = ["/kamibfun"]; // Add paths to hide Navbar
+    const hiddenNavbarPaths = ["/show/147"]; // Add paths to hide Navbar
     const isNavbarVisible = !hiddenNavbarPaths.includes(location.pathname); // Determine visibility
 
     return (
@@ -52,8 +53,9 @@ function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/home" element={<Home />} />
                             <Route path="/reserve/:concertId" element={<Reserve />} />
+                            <Route path="/reserve/147" element={<KamibReserve />} />
                             <Route path="/payment" element={<Payment />} />
-                            <Route path="/kamibfun" element={<Kamibfun />} />
+                            <Route path="/show/147" element={<Kamibfun />} />
                             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                             <Route path="/terms-of-service" element={<TermsOfService />} />
                             <Route path="/contact-us" element={<ContactUs />} />

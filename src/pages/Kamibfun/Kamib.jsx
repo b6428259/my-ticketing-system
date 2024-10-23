@@ -68,7 +68,7 @@ const Kamibfun = () => {
 
           {/* Ticket Section */}
           <div id="ticket-section" className="mb-6">
-            <h1 className="text-xl sm:text-2xl font-bold my-4 sm:mb-6 mb-20 text-center">Book your ticket</h1>
+            <h1 className="text-xl sm:text-2xl font-bold my-4 sm:mb-6 mb-20 text-center">สำรองที่นั่ง</h1>
             <div className="max-w-sm sm:max-w-md mx-auto rounded-lg p-4 sm:p-6 shadow-lg bg-black bg-opacity-80">
               <div className="flex justify-center mb-4">
                 <img src={logoImage} alt={concert.name} className="rounded-full w-24 h-24 sm:w-32 sm:h-32" />
