@@ -15,7 +15,7 @@ import VideoPreview from './components/VideoPreview/VideoPreview';
 import videoSrc from '../../assets/Videos/kamibfun.mp4';
 import posterImage from '../../assets/Images/kamibfunposter.jpg';
 import { Button } from '@nextui-org/button';
-import './kamib.css'; // Load specific component styles after
+import './Kamib.css'; // Load specific component styles after
 
 
 const Kamibfun = () => {
