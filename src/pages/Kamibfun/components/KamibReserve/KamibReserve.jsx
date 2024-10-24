@@ -15,11 +15,9 @@ import {
     ModalContent,
     ModalHeader,
     ModalBody,
-    ModalFooter,
 } from '@nextui-org/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus, faTrash, faClock, faLanguage } from '@fortawesome/free-solid-svg-icons';
-
 import "./KamibReserve.css";
 
 const Reserve = () => {
@@ -38,6 +36,8 @@ const Reserve = () => {
     const [error, setError] = useState('');
     const { language, toggleLanguage, t } = useLanguage();
     const [showLanguageModal, setShowLanguageModal] = useState(true);
+    const [processingPayment, setProcessingPayment] = useState(false);
+
 
     // Language Selection Modal
     const handleLanguageSelect = (selectedLanguage) => {
@@ -48,8 +48,8 @@ const Reserve = () => {
     };
 
     const LanguageModal = () => (
-        <Modal 
-            isOpen={showLanguageModal} 
+        <Modal
+            isOpen={showLanguageModal}
             onClose={() => setShowLanguageModal(false)}
             hideCloseButton
             isDismissable={false}
@@ -151,15 +151,57 @@ const Reserve = () => {
     const handleRoundSelect = (roundId) => {
         setSelectedRoundId(roundId);
     };
-    const handleBuy = async () => {
-        const purchases = cart.map(product => ({
-            userId: user.id,
-            productId: product.productId,
-            quantity: product.quantity,
-        }));
 
+    const createCheckoutSession = async (cartItems) => {
         try {
-            for (const purchase of purchases) {
+            const response = await fetch('https://api.spotup.shop/checkout/create-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',  // Changed to text/plain to avoid triggering preflight
+                },
+                body: JSON.stringify({
+                    productName: "Concert Tickets",
+                    amount: Math.round(parseFloat(calculateTotal()) * 100), // Convert to cents
+                })
+            });
+    
+            if (response.redirected) {
+                // The backend will redirect directly to Stripe Checkout
+                window.location.href = response.url;
+                return;
+            }
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const session = await response.json();
+    
+            // Store cart data in localStorage before redirecting
+            localStorage.setItem('pendingPurchase', JSON.stringify({
+                sessionId: session.sessionId,
+                cart: cartItems.map(item => ({
+                    userId: user.id,
+                    productId: item.productId,
+                    quantity: item.quantity,
+                }))
+            }));
+    
+            return session;
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+            throw error;
+        }
+    };
+    
+    // Function to process the ticket purchase after successful payment
+    const processPurchase = async (purchaseData) => {
+        const { cart } = purchaseData;
+    
+        try {
+            setProcessingPayment(true);
+    
+            for (const purchase of cart) {
                 const response = await fetch(`https://api.spotup.shop/api/v1/tickets/buy`, {
                     method: 'POST',
                     headers: {
@@ -167,16 +209,64 @@ const Reserve = () => {
                     },
                     body: JSON.stringify(purchase),
                 });
+    
                 const result = await response.json();
                 if (!result.success) throw new Error(result.message);
             }
-            alert('Purchase successful!');
+    
+            // Clear the pending purchase from localStorage
+            localStorage.removeItem('pendingPurchase');
+    
+            // Show success message and redirect
+            alert(t('purchaseSuccessful'));
             navigate(`/my-tickets`);
         } catch (error) {
-            setError('Error purchasing tickets. Please try again.');
-            console.error(error);
+            console.error('Error purchasing tickets:', error);
+            setError(t('purchaseError'));
+        } finally {
+            setProcessingPayment(false);
         }
     };
+    
+    const handleBuy = async () => {
+        try {
+            setLoading(true);
+            await createCheckoutSession(cart);  // No need to handle the session URL here since the backend redirects
+        } catch (error) {
+            setError(t('checkoutError'));
+            console.error('Error during checkout:', error);
+            setLoading(false);
+        }
+    };
+    
+    // Check for successful payment and process the ticket purchase
+    useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        const sessionId = query.get('session_id');
+    
+        if (sessionId) {
+            const pendingPurchase = JSON.parse(localStorage.getItem('pendingPurchase') || 'null');
+    
+            if (pendingPurchase && pendingPurchase.sessionId === sessionId) {
+                // Verify the payment first
+                fetch(`https://api.spotup.shop/checkout/verify/${sessionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.paid) {
+                            // Process the ticket purchase
+                            return processPurchase(pendingPurchase);
+                        } else {
+                            throw new Error('Payment verification failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error verifying payment:', error);
+                        setError(t('paymentVerificationError'));
+                    });
+            }
+        }
+    }, [navigate]);
+    
 
     const handleAddToCart = (product) => {
         const quantity = quantities[product.productId] || 1;
@@ -281,8 +371,8 @@ const Reserve = () => {
                                         key={round.id}
                                         onClick={() => handleRoundSelect(round.id)}
                                         className={`w-full text-left p-4 rounded-lg transition-all ${selectedRoundId === round.id
-                                                ? 'bg-blue-600 border-2 border-blue-400'
-                                                : 'bg-gray-800 hover:bg-gray-700'
+                                            ? 'bg-blue-600 border-2 border-blue-400'
+                                            : 'bg-gray-800 hover:bg-gray-700'
                                             }`}
                                     >
                                         <div className="flex items-center justify-between">
@@ -371,6 +461,8 @@ const Reserve = () => {
                 )}
 
                 {cart.length > 0 && (
+
+
                     <div className="mb-6">
                         <h3 className="text-2xl font-semibold mb-2">{t('yourCart')}</h3>
                         <ul className="list-disc pl-5">
@@ -403,6 +495,7 @@ const Reserve = () => {
                                         >
                                             <FontAwesomeIcon icon={faTrash} style={{ color: "#ff0000" }} />
                                         </Button>
+
                                     </div>
                                 </li>
                             ))}
@@ -414,9 +507,22 @@ const Reserve = () => {
                 )}
 
                 {cart.length > 0 && (
-                    <Button color="success" onClick={handleBuy} className="w-full">
-                        {t('buyNow')}
+                    <Button
+                        color="success"
+                        onClick={handleBuy}
+                        className="w-full"
+                        disabled={loading || processingPayment}
+                    >
+                        {loading ? t('creatingCheckout') :
+                            processingPayment ? t('processingPurchase') :
+                                t('buyNow')}
                     </Button>
+                )}
+
+                {error && (
+                    <div className="text-red-500 mt-4 text-center">
+                        {error}
+                    </div>
                 )}
             </div>
         </div>

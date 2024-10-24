@@ -23,6 +23,10 @@ export const LanguageProvider = ({ children }) => {
             total: "ยอดรวม",
             buyNow: "ซื้อเลย",
             reserveTitle: "จองตั๋วสำหรับคอนเสิร์ต",
+            checkoutError: "เกิดข้อผิดพลาดในการสร้างเซสชันการชำระเงิน โปรดลองอีกครั้ง",
+            purchaseSuccessful: "การซื้อสำเร็จ!",
+            paymentVerificationError: "เกิดข้อผิดพลาดในการตรวจสอบสถานะการชำระเงิน",
+            processing: "กำลังดำเนินการ...",
         },
         en: {
             selectDate: "Select Date",
@@ -40,6 +44,10 @@ export const LanguageProvider = ({ children }) => {
             total: "Total",
             buyNow: "Buy Now",
             reserveTitle: "Reserve Tickets for Concert",
+            checkoutError: "Error creating checkout session. Please try again.",
+            purchaseSuccessful: "Purchase successful!",
+            paymentVerificationError: "Error verifying payment status.",
+            processing: "Processing...",
         }
     };
 
